@@ -1,38 +1,27 @@
 // BaseNode.js — Core abstraction for all pipeline nodes
+// VectorShift-inspired light mode design with solid headers
 import { Handle, Position } from 'reactflow';
 
 /**
  * BaseNode renders any node from a declarative config object.
+ * Uses VectorShift two-toned design: solid color header + white body.
  *
  * Config shape:
  * {
  *   nodeType: string,           // display label in header
- *   headerColor: string,        // accent color for the left border + header
- *   icon: string,               // emoji or short string shown in header
- *   minWidth: number,           // minimum width in px (default 220)
- *   inputs: [                   // left-side target handles
- *     { id: string, label: string, style?: object }
- *   ],
- *   outputs: [                  // right-side source handles
- *     { id: string, label: string, style?: object }
- *   ],
- *   fields: [                   // rendered form fields
- *     {
- *       key: string,
- *       label: string,
- *       type: 'text' | 'select' | 'textarea',
- *       options?: [{ value, label }],   // for select
- *       defaultValue: any,
- *     }
- *   ],
+ *   headerColor: string,     // accent color for solid header
+ *   icon: string,             // emoji or short string shown in header
+ *   minWidth: number,         // minimum width in px (default 240)
+ *   inputs: [{ id, label }],  // left-side target handles
+ *   outputs: [{ id, label }],  // right-side source handles
  * }
  */
 export const BaseNode = ({ id, data, config, children, style: extraStyle = {} }) => {
   const {
     nodeType = 'Node',
-    headerColor = '#6366f1',
+    headerColor = '#8b5cf6',
     icon = '⬡',
-    minWidth = 220,
+    minWidth = 240,
     inputs = [],
     outputs = [],
   } = config;
@@ -42,7 +31,11 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
   const outputPositions = distributeHandles(outputs.length);
 
   return (
-    <div style={{ ...nodeStyle, minWidth, borderColor: headerColor, borderLeftColor: headerColor, ...extraStyle }}>
+    <div style={{
+      ...nodeStyle,
+      minWidth,
+      ...extraStyle
+    }}>
       {/* Left-side target handles */}
       {inputs.map((handle, i) => (
         <div key={handle.id}>
@@ -50,22 +43,30 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
             type="target"
             position={Position.Left}
             id={`${id}-${handle.id}`}
-            style={{ top: `${inputPositions[i]}%`, ...handleStyle, background: headerColor, ...(handle.style || {}) }}
+            style={{
+              top: `${inputPositions[i]}%`,
+              ...handleStyle,
+              background: headerColor,
+              border: '2px solid var(--bg-primary)',
+              ...(handle.style || {})
+            }}
           />
-          <span style={{ ...handleLabelStyle, left: 10, top: `calc(${inputPositions[i]}% - 8px)` }}>
+          <span style={{ ...handleLabelStyle, left: 14, top: `calc(${inputPositions[i]}% - 7px)` }}>
             {handle.label}
           </span>
         </div>
       ))}
 
-      {/* Header */}
-      <div style={{ ...headerStyle, background: `linear-gradient(135deg, ${headerColor}22, ${headerColor}11)`, borderBottom: `1px solid ${headerColor}44` }}>
+      {/* Header - Solid color background */}
+      <div style={{
+        ...headerStyle,
+        background: headerColor,
+      }}>
         <span style={iconStyle}>{icon}</span>
         <span style={headerTextStyle}>{nodeType}</span>
-        <div style={{ ...headerAccentStyle, background: headerColor }} />
       </div>
 
-      {/* Body — fields + optional children */}
+      {/* Body — white background with content */}
       <div style={bodyStyle}>
         {children}
       </div>
@@ -77,9 +78,15 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
             type="source"
             position={Position.Right}
             id={`${id}-${handle.id}`}
-            style={{ top: `${outputPositions[i]}%`, ...handleStyle, background: headerColor, ...(handle.style || {}) }}
+            style={{
+              top: `${outputPositions[i]}%`,
+              ...handleStyle,
+              background: headerColor,
+              border: '2px solid var(--bg-primary)',
+              ...(handle.style || {})
+            }}
           />
-          <span style={{ ...handleLabelStyle, right: 10, top: `calc(${outputPositions[i]}% - 8px)`, textAlign: 'right' }}>
+          <span style={{ ...handleLabelStyle, right: 14, top: `calc(${outputPositions[i]}% - 7px)`, textAlign: 'right' }}>
             {handle.label}
           </span>
         </div>
@@ -112,103 +119,95 @@ function distributeHandles(count) {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 const nodeStyle = {
-  background: '#0f1117',
-  border: '1px solid #1e2535',
-  borderLeft: '3px solid transparent',
-  borderRadius: '10px',
-  boxShadow: '0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset',
+  background: 'var(--bg-primary)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-lg)',
   fontFamily: 'var(--font-body)',
   position: 'relative',
   overflow: 'visible',
-  minWidth: 220,
-  transition: 'box-shadow 0.2s ease',
+  minWidth: 240,
+  transition: 'box-shadow var(--transition-fast), transform var(--transition-fast)',
+  boxShadow: 'var(--shadow-md)',
 };
 
 const headerStyle = {
   display: 'flex',
   alignItems: 'center',
-  gap: 'var(--space-6)',
-  padding: 'var(--space-6) var(--space-9)',
-  borderRadius: '8px 8px 0 0',
+  gap: 8,
+  padding: '10px 14px',
+  borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
   position: 'relative',
-  overflow: 'hidden',
 };
 
 const iconStyle = {
   fontSize: 14,
   lineHeight: 1,
+  color: '#ffffff',
 };
 
 const headerTextStyle = {
-  fontSize: 11,
+  fontSize: 13,
   fontWeight: 600,
-  letterSpacing: '0.08em',
-  textTransform: 'uppercase',
-  color: '#c9d1e0',
-};
-
-const headerAccentStyle = {
-  position: 'absolute',
-  right: -20,
-  top: -10,
-  width: 60,
-  height: 60,
-  borderRadius: '50%',
-  opacity: 0.12,
-  filter: 'blur(16px)',
+  letterSpacing: '-0.01em',
+  color: '#ffffff',
 };
 
 const bodyStyle = {
-  padding: 'var(--space-8) var(--space-9) var(--space-9)',
+  padding: 14,
   display: 'flex',
   flexDirection: 'column',
-  gap: 'var(--space-6)',
+  gap: 12,
+  background: 'var(--bg-primary)',
 };
 
 const handleStyle = {
   width: 10,
   height: 10,
-  border: '2px solid #0f1117',
   borderRadius: '50%',
   cursor: 'crosshair',
+  transition: 'transform var(--transition-fast), box-shadow var(--transition-fast)',
 };
 
 const handleLabelStyle = {
   position: 'absolute',
-  fontSize: 9,
-  color: '#64748b',
-  letterSpacing: '0.05em',
-  textTransform: 'uppercase',
+  fontSize: 10,
+  color: 'var(--text-secondary)',
+  fontWeight: 500,
+  letterSpacing: '0.01em',
   pointerEvents: 'none',
   whiteSpace: 'nowrap',
+  background: 'var(--bg-primary)',
+  padding: '2px 6px',
+  borderRadius: 4,
+  boxShadow: 'var(--shadow-xs)',
 };
 
 export const fieldWrapStyle = {
   display: 'flex',
   flexDirection: 'column',
-  gap: 'var(--space-4)',
+  gap: 4,
 };
 
 export const fieldLabelStyle = {
-  fontSize: 10,
+  fontSize: 11,
   fontWeight: 600,
-  color: '#64748b',
-  letterSpacing: '0.07em',
+  color: 'var(--text-secondary)',
+  letterSpacing: '0.02em',
   textTransform: 'uppercase',
 };
 
 const sharedInputStyle = {
-  background: '#1a2030',
-  border: '1px solid #2a3448',
-  borderRadius: 6,
-  color: '#c9d1e0',
-  fontSize: 12,
-  padding: 'var(--space-5) var(--space-6)',
+  background: 'var(--bg-secondary)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-sm)',
+  color: 'var(--text-primary)',
+  fontSize: 13,
+  padding: '8px 12px',
   width: '100%',
   boxSizing: 'border-box',
   outline: 'none',
   fontFamily: 'inherit',
-  transition: 'border-color 0.15s',
+  transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)',
 };
 
 export const inputStyle = { ...sharedInputStyle };
@@ -217,5 +216,5 @@ export const textareaStyle = {
   ...sharedInputStyle,
   resize: 'none',
   lineHeight: 1.5,
-  minHeight: 60,
+  minHeight: 56,
 };

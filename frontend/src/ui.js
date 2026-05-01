@@ -1,5 +1,5 @@
-// ui.js
-import { useRef, useCallback, useState } from 'react';
+// ui.js — VectorShift-styled ReactFlow pipeline canvas (light mode)
+import { useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
 import { InputNode } from './nodes/inputNode';
@@ -32,13 +32,25 @@ const nodeTypes = {
   vectorSearch: VectorSearchNode,
 };
 
+// Node color map for MiniMap
+const nodeColorMap = {
+  customInput: '#10b981',
+  llm: '#8b5cf6',
+  customOutput: '#f59e0b',
+  text: '#0ea5e9',
+  apiRequest: '#f43f5e',
+  conditional: '#ec4899',
+  transform: '#14b8a6',
+  note: '#eab308',
+  vectorSearch: '#a855f7',
+};
+
 // Inner component — must be inside ReactFlowProvider to use useReactFlow()
 const Flow = ({ nodes, setNodes, edges, setEdges }) => {
   const reactFlowWrapper = useRef(null);
   const { screenToFlowPosition } = useReactFlow();
   const getNodeID = useStore((state) => state.getNodeID);
 
-  // Use prop state if provided, otherwise use local state
   const activeNodes = nodes;
   const activeEdges = edges;
   const activeSetNodes = setNodes;
@@ -60,8 +72,8 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
           ...connection,
           type: 'smoothstep',
           animated: true,
-          markerEnd: { type: 'arrowclosed', height: 16, width: 16, color: '#6366f1' },
-          style: { stroke: '#6366f1', strokeWidth: 2 },
+          markerEnd: { type: 'arrowclosed', height: 16, width: 16, color: '#8b5cf6' },
+          style: { stroke: '#8b5cf6', strokeWidth: 2 },
         })
       ),
     [activeSetEdges]
@@ -95,7 +107,10 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
   }, []);
 
   return (
-    <div ref={reactFlowWrapper} style={{ width: '100vw', height: 'calc(100vh - var(--space-15) - var(--space-13))' }}>
+    <div
+      ref={reactFlowWrapper}
+      style={{ width: '100vw', height: 'calc(100vh - 56px - 52px)' }}
+    >
       <ReactFlow
         nodes={activeNodes}
         edges={activeEdges}
@@ -110,29 +125,21 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
         snapToGrid
         connectionLineType="smoothstep"
         defaultEdgeOptions={{
-          style: { stroke: '#6366f1', strokeWidth: 2 },
+          style: { stroke: '#8b5cf6', strokeWidth: 2 },
           animated: true,
         }}
       >
-        <Background color="#1e2535" gap={gridSize} variant="dots" />
-        <Controls style={{ background: '#0f1117', border: '1px solid #1e2535', borderRadius: 8 }} />
+        {/* Dot grid pattern */}
+        <Background color="#e2e8f0" gap={gridSize} variant="dots" size={1} />
+        <Controls />
         <MiniMap
-          style={{ background: '#080c12', border: '1px solid #1e2535' }}
-          nodeColor={(node) => {
-            const colorMap = {
-              customInput: '#10b981',
-              llm: '#8b5cf6',
-              customOutput: '#f59e0b',
-              text: '#06b6d4',
-              apiRequest: '#f43f5e',
-              conditional: '#ec4899',
-              transform: '#14b8a6',
-              note: '#eab308',
-              vectorSearch: '#a855f7',
-            };
-            return colorMap[node.type] || '#6366f1';
+          style={{
+            background: 'var(--bg-primary)',
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-md)',
           }}
-          maskColor="rgba(8,12,18,0.7)"
+          nodeColor={(node) => nodeColorMap[node.type] || '#8b5cf6'}
+          maskColor="rgba(255, 255, 255, 0.8)"
         />
       </ReactFlow>
     </div>

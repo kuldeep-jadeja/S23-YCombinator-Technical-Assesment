@@ -1,5 +1,5 @@
-// draggableNode.js
-export const DraggableNode = ({ type, label, color = '#6366f1', icon = '⬡' }) => {
+// draggableNode.js — VectorShift-inspired draggable node palette items (light mode)
+export const DraggableNode = ({ type, label, color = '#8b5cf6', icon = '⬡' }) => {
   const onDragStart = (event, nodeType) => {
     const appData = { nodeType };
     event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
@@ -16,25 +16,33 @@ export const DraggableNode = ({ type, label, color = '#6366f1', icon = '⬡' }) 
         display: 'flex',
         alignItems: 'center',
         gap: 6,
-        padding: 'var(--space-5) var(--space-8)',
-        borderRadius: 7,
-        background: '#0f1117',
-        border: `1px solid ${color}44`,
-        borderLeft: `2px solid ${color}`,
+        padding: '8px 14px',
+        borderRadius: 'var(--radius-md)',
+        background: 'var(--bg-primary)',
+        border: '1px solid var(--border-light)',
+        borderLeft: `3px solid ${color}`,
         fontFamily: 'var(--font-body)',
-        fontSize: 11,
-        fontWeight: 600,
-        color: '#c9d1e0',
-        letterSpacing: '0.04em',
+        fontSize: 12,
+        fontWeight: 500,
+        color: 'var(--text-primary)',
         whiteSpace: 'nowrap',
-        transition: 'background 0.15s, border-color 0.15s',
+        transition: 'all var(--transition-fast)',
         userSelect: 'none',
         flexShrink: 0,
+        boxShadow: 'var(--shadow-xs)',
       }}
-      onMouseEnter={e => e.currentTarget.style.background = `${color}18`}
-      onMouseLeave={e => e.currentTarget.style.background = '#0f1117'}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = `${color}`;
+        e.currentTarget.style.borderLeftColor = `${color}`;
+        e.currentTarget.style.background = 'var(--bg-secondary)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'var(--border-light)';
+        e.currentTarget.style.borderLeftColor = `${color}`;
+        e.currentTarget.style.background = 'var(--bg-primary)';
+      }}
     >
-      <span style={{ fontSize: 13, color }}>{icon}</span>
+      <span style={{ fontSize: 14, color }}>{icon}</span>
       {label}
     </div>
   );

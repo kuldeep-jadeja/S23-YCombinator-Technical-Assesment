@@ -1,4 +1,4 @@
-// submit.js — sends pipeline data to /pipelines/parse
+// submit.js — VectorShift-styled pipeline submission (light mode)
 import { useState } from 'react';
 
 export const SubmitButton = ({ nodes = [], edges = [] }) => {
@@ -31,14 +31,14 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
       <div style={barStyle}>
         <div style={statsStyle}>
           <Chip label="Nodes" value={nodes.length} color="#10b981" />
-          <Chip label="Edges" value={edges.length} color="#6366f1" />
+          <Chip label="Edges" value={edges.length} color="#8b5cf6" />
         </div>
         <button
           onClick={handleSubmit}
           disabled={loading}
           style={{ ...btnStyle, ...(loading ? btnDisabledStyle : {}) }}
-          onMouseEnter={e => !loading && (e.currentTarget.style.background = '#5254f0')}
-          onMouseLeave={e => !loading && (e.currentTarget.style.background = '#6366f1')}
+          onMouseEnter={e => !loading && (e.currentTarget.style.background = '#7c3aed')}
+          onMouseLeave={e => !loading && (e.currentTarget.style.background = 'var(--accent-primary)')}
         >
           {loading ? (
             <><span style={spinnerStyle}>⟳</span> Analyzing…</>
@@ -55,30 +55,30 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
             {error ? (
               <>
                 <div style={{ ...modalHeaderStyle, borderColor: '#f43f5e' }}>
-                  <span style={{ color: '#f43f5e' }}>✕ Connection Error</span>
+                  <span style={{ color: '#f43f5e', fontSize: 16 }}>✕ Connection Error</span>
                 </div>
                 <p style={modalBodyStyle}>{error}</p>
-                <p style={{ ...modalBodyStyle, color: '#475569', fontSize: 11 }}>
+                <p style={{ ...modalBodyStyle, fontSize: 11, color: 'var(--text-secondary)' }}>
                   Make sure the backend is running: <code style={codeStyle}>uvicorn main:app --reload</code>
                 </p>
               </>
             ) : (
               <>
                 <div style={{ ...modalHeaderStyle, borderColor: result.is_dag ? '#10b981' : '#f59e0b' }}>
-                  <span style={{ color: result.is_dag ? '#10b981' : '#f59e0b' }}>
+                  <span style={{ color: result.is_dag ? '#10b981' : '#f59e0b', fontSize: 16 }}>
                     {result.is_dag ? '✓ Valid DAG' : '⚠ Cycle Detected'}
                   </span>
                 </div>
                 <div style={metricsStyle}>
                   <Metric label="Nodes" value={result.num_nodes} color="#10b981" />
-                  <Metric label="Edges" value={result.num_edges} color="#6366f1" />
+                  <Metric label="Edges" value={result.num_edges} color="#8b5cf6" />
                   <Metric
                     label="Is DAG"
                     value={result.is_dag ? 'Yes' : 'No'}
                     color={result.is_dag ? '#10b981' : '#f59e0b'}
                   />
                 </div>
-                <p style={{ ...modalBodyStyle, color: '#475569', fontSize: 11, marginTop: 12 }}>
+                <p style={{ ...modalBodyStyle, fontSize: 13, marginTop: 16 }}>
                   {result.is_dag
                     ? 'Pipeline has no cycles — safe to execute.'
                     : 'Pipeline contains a cycle. Fix circular connections before execution.'}
@@ -97,9 +97,16 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 const Chip = ({ label, value, color }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b', fontFamily: 'var(--font-body)' }}>
-    <span style={{ color, fontWeight: 700, fontSize: 14 }}>{value}</span>
-    <span style={{ letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</span>
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 12,
+    color: 'var(--text-secondary)',
+    fontFamily: 'var(--font-body)',
+  }}>
+    <span style={{ color, fontWeight: 700, fontSize: 16 }}>{value}</span>
+    <span style={{ letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: 11 }}>{label}</span>
   </div>
 );
 
@@ -107,13 +114,13 @@ const Metric = ({ label, value, color }) => (
   <div style={{
     flex: 1,
     textAlign: 'center',
-    padding: '12px 8px',
-    background: `${color}0d`,
-    border: `1px solid ${color}33`,
-    borderRadius: 8,
+    padding: '16px 12px',
+    background: `${color}10`,
+    border: `1px solid ${color}30`,
+    borderRadius: 'var(--radius-md)',
   }}>
-    <div style={{ fontSize: 24, fontWeight: 700, color, fontFamily: 'var(--font-body)' }}>{value}</div>
-    <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 4 }}>{label}</div>
+    <div style={{ fontSize: 28, fontWeight: 700, color, fontFamily: 'var(--font-body)' }}>{value}</div>
+    <div style={{ fontSize: 10, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 4 }}>{label}</div>
   </div>
 );
 
@@ -122,36 +129,39 @@ const barStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: 'var(--space-8) var(--space-11)',
-  background: '#080c12',
-  borderTop: '1px solid #1e2535',
+  padding: '12px 24px',
+  background: 'var(--bg-primary)',
+  borderTop: '1px solid var(--border-light)',
+  boxShadow: 'var(--shadow-xs)',
 };
 
 const statsStyle = {
   display: 'flex',
-  gap: 20,
+  gap: 24,
 };
 
 const btnStyle = {
-  background: '#6366f1',
-  color: '#fff',
+  background: 'var(--accent-primary)',
+  color: '#ffffff',
   border: 'none',
-  borderRadius: 8,
-  padding: 'var(--space-6) var(--space-10)',
-  fontSize: 12,
-  fontWeight: 700,
+  borderRadius: 'var(--radius-md)',
+  padding: '10px 20px',
+  fontSize: 13,
+  fontWeight: 600,
   fontFamily: 'var(--font-body)',
-  letterSpacing: '0.04em',
+  letterSpacing: '0.02em',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   gap: 8,
-  transition: 'background 0.15s',
+  transition: 'background var(--transition-fast), transform var(--transition-fast)',
+  boxShadow: 'var(--shadow-sm)',
 };
 
 const btnDisabledStyle = {
   opacity: 0.6,
   cursor: 'not-allowed',
+  transform: 'none',
 };
 
 const spinnerStyle = {
@@ -162,7 +172,7 @@ const spinnerStyle = {
 const overlayStyle = {
   position: 'fixed',
   inset: 0,
-  background: 'rgba(0,0,0,0.7)',
+  background: 'rgba(0, 0, 0, 0.5)',
   backdropFilter: 'blur(4px)',
   display: 'flex',
   alignItems: 'center',
@@ -171,55 +181,57 @@ const overlayStyle = {
 };
 
 const modalStyle = {
-  background: '#0f1117',
-  border: '1px solid #1e2535',
-  borderRadius: 12,
-  padding: 'var(--space-11)',
-  minWidth: 340,
-  maxWidth: 420,
-  boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
+  background: 'var(--bg-primary)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-xl)',
+  padding: 24,
+  minWidth: 360,
+  maxWidth: 440,
+  boxShadow: 'var(--shadow-lg)',
   fontFamily: 'var(--font-body)',
 };
 
 const modalHeaderStyle = {
-  fontSize: 15,
+  fontSize: 16,
   fontWeight: 700,
-  marginBottom: 16,
-  paddingBottom: 12,
-  borderBottom: '1px solid #1e2535',
+  marginBottom: 20,
+  paddingBottom: 16,
+  borderBottom: '1px solid var(--border-light)',
 };
 
 const modalBodyStyle = {
-  fontSize: 12,
-  color: '#94a3b8',
+  fontSize: 13,
+  color: 'var(--text-secondary)',
   lineHeight: 1.6,
   margin: 0,
 };
 
 const metricsStyle = {
   display: 'flex',
-  gap: 10,
+  gap: 12,
 };
 
 const closeBtnStyle = {
-  marginTop: 18,
+  marginTop: 20,
   width: '100%',
-  background: '#1a2030',
-  border: '1px solid #2a3448',
-  borderRadius: 7,
-  color: '#94a3b8',
-  fontSize: 12,
+  background: 'var(--bg-secondary)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
+  fontSize: 13,
   fontWeight: 600,
   fontFamily: 'var(--font-body)',
-  padding: 'var(--space-6) 0',
+  padding: '10px 0',
   cursor: 'pointer',
-  letterSpacing: '0.04em',
+  letterSpacing: '0.02em',
+  transition: 'background var(--transition-fast)',
 };
 
 const codeStyle = {
-  background: '#1a2030',
-  padding: '1px 5px',
-  borderRadius: 4,
-  fontSize: 10,
-  color: '#06b6d4',
+  background: 'var(--bg-secondary)',
+  padding: '2px 8px',
+  borderRadius: 'var(--radius-sm)',
+  fontSize: 11,
+  color: 'var(--accent-primary)',
+  fontFamily: 'var(--font-mono)',
 };

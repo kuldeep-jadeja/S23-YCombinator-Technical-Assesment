@@ -18,7 +18,7 @@ export const LLMNode = ({ id, data }) => {
 
   return (
     <BaseNode id={id} data={data} config={config}>
-      <div style={{ fontSize: 11, color: '#475569', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 8 }}>
         Large Language Model node. Connect a system prompt and user prompt to generate a response.
       </div>
       <NodeField label="Model">

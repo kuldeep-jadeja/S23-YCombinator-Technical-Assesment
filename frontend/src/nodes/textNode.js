@@ -1,10 +1,10 @@
-// textNode.js — Part 3: dynamic resize + {{variable}} → Handle generation
+// textNode.js — Dynamic resize + {{variable}} → Handle generation (light mode)
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import { BaseNode, fieldLabelStyle, fieldWrapStyle } from './BaseNode';
 
 const VARIABLE_REGEX = /\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g;
-const HEADER_COLOR = '#06b6d4';
+const HEADER_COLOR = '#0ea5e9';
 
 const baseConfig = {
   nodeType: 'Text',
@@ -31,11 +31,9 @@ export const TextNode = ({ id, data }) => {
 
   // Dynamic node width based on longest line of text
   const longestLine = Math.max(...currText.split('\n').map(l => l.length), 10);
-  const dynamicWidth = Math.min(Math.max(longestLine * 7.5 + 60, 220), 520);
+  const dynamicWidth = Math.min(Math.max(longestLine * 8 + 80, 240), 560);
 
-  // Distribute variable handles across the node height.
-  // ReactFlow positions Handle `top` % relative to the node root element.
-  // We spread them from 30% (below header) to 85% (above output handle).
+  // Distribute variable handles across the node height
   const varHandlePositions = distributeVariableHandles(variables.length);
 
   return (
@@ -43,7 +41,7 @@ export const TextNode = ({ id, data }) => {
       id={id}
       data={data}
       config={{ ...baseConfig, minWidth: dynamicWidth }}
-      style={{ minWidth: dynamicWidth, transition: 'min-width 0.15s ease' }}
+      style={{ minWidth: dynamicWidth }}
     >
       {/* Variable Handles - left side, dynamic */}
       {variables.map((varName, i) => (
@@ -57,7 +55,7 @@ export const TextNode = ({ id, data }) => {
             width: 10,
             height: 10,
             background: HEADER_COLOR,
-            border: '2px solid #0f1117',
+            border: '2px solid var(--bg-primary)',
             borderRadius: '50%',
           }}
           title={varName}
@@ -73,37 +71,37 @@ export const TextNode = ({ id, data }) => {
           onChange={(e) => setCurrText(e.target.value)}
           placeholder="Type text... use {{variable}} to create input handles"
           style={{
-            background: '#1a2030',
-            border: '1px solid #2a3448',
-            borderRadius: 6,
-            color: '#c9d1e0',
-            fontSize: 12,
-            padding: 'var(--space-5) var(--space-6)',
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-light)',
+            borderRadius: 'var(--radius-sm)',
+            color: 'var(--text-primary)',
+            fontSize: 13,
+            padding: '10px 12px',
             width: '100%',
             boxSizing: 'border-box',
             outline: 'none',
             fontFamily: 'var(--font-body)',
             resize: 'none',
             lineHeight: 1.6,
-            minHeight: 48,
+            minHeight: 56,
             overflow: 'hidden',
-            transition: 'height 0.1s ease',
           }}
         />
       </div>
 
       {/* Variable Chips */}
       {variables.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-4)', marginTop: 'var(--space-2)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
           {variables.map(v => (
             <span key={v} style={{
-              background: '#06b6d41a',
-              border: '1px solid #06b6d444',
+              background: `${HEADER_COLOR}15`,
+              border: `1px solid ${HEADER_COLOR}30`,
               borderRadius: 4,
               color: HEADER_COLOR,
-              fontSize: 10,
-              padding: '2px 6px',
-              fontFamily: 'inherit',
+              fontSize: 11,
+              padding: '3px 8px',
+              fontFamily: 'var(--font-body)',
+              fontWeight: 500,
             }}>
               {'{{'}{v}{'}}'}
             </span>
