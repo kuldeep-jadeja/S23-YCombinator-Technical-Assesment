@@ -1,0 +1,629 @@
+{
+  "url": "https://vectorshift.ai/",
+  "extractedAt": "2026-05-01T17:54:55.200Z",
+  "siteName": "VectorShift",
+  "logo": null,
+  "favicons": [
+    {
+      "type": "icon",
+      "url": "https://framerusercontent.com/images/mmHr0hfCho7PjYPw3BhcB5NhDOA.png",
+      "sizes": null
+    },
+    {
+      "type": "icon",
+      "url": "https://framerusercontent.com/images/mmHr0hfCho7PjYPw3BhcB5NhDOA.png",
+      "sizes": null
+    },
+    {
+      "type": "og:image",
+      "url": "https://framerusercontent.com/images/VIY5IrHTsKSnjCoC6S1CPUEruXc.png",
+      "sizes": null
+    },
+    {
+      "type": "twitter:image",
+      "url": "https://framerusercontent.com/images/VIY5IrHTsKSnjCoC6S1CPUEruXc.png",
+      "sizes": null
+    },
+    {
+      "type": "favicon.ico",
+      "url": "https://vectorshift.ai/favicon.ico",
+      "sizes": null
+    }
+  ],
+  "colors": {
+    "semantic": {},
+    "palette": [
+      {
+        "color": "rgb(255, 255, 255)",
+        "normalized": "#ffffff",
+        "count": 499,
+        "confidence": "high",
+        "sources": [],
+        "lch": "lch(100% 0 158.2)",
+        "oklch": "oklch(100% 0 89.88)"
+      },
+      {
+        "color": "rgb(230, 221, 253)",
+        "normalized": "#e6ddfd",
+        "count": 306,
+        "confidence": "high",
+        "sources": [],
+        "lch": "lch(89.69% 16.99 301.9)",
+        "oklch": "oklch(91.45% 0.044 298.38)"
+      },
+      {
+        "color": "rgb(188, 125, 255)",
+        "normalized": "#bc7dff",
+        "count": 27,
+        "confidence": "high",
+        "sources": [],
+        "lch": "lch(63.82% 74.15 311.22)",
+        "oklch": "oklch(70.84% 0.19 304.37)"
+      }
+    ],
+    "cssVariables": {},
+    "_raw": [
+      {
+        "color": "rgb(0, 0, 0)",
+        "normalized": "#000000",
+        "count": 2876
+      },
+      {
+        "color": "rgb(0, 0, 238)",
+        "normalized": "#0000ee",
+        "count": 254
+      },
+      {
+        "color": "rgb(230, 221, 253)",
+        "normalized": "#e6ddfd",
+        "count": 306
+      },
+      {
+        "color": "rgb(255, 255, 255)",
+        "normalized": "#ffffff",
+        "count": 499
+      },
+      {
+        "color": "rgb(188, 125, 255)",
+        "normalized": "#bc7dff",
+        "count": 27
+      },
+      {
+        "color": "rgb(129, 237, 251)",
+        "normalized": "#81edfb",
+        "count": 24
+      },
+      {
+        "color": "rgb(255, 114, 76)",
+        "normalized": "#ff724c",
+        "count": 28
+      },
+      {
+        "color": "rgb(86, 154, 209)",
+        "normalized": "#569ad1",
+        "count": 28
+      },
+      {
+        "color": "rgb(255, 171, 66)",
+        "normalized": "#ffab42",
+        "count": 32
+      },
+      {
+        "color": "rgb(255, 116, 79)",
+        "normalized": "#ff744f",
+        "count": 24
+      }
+    ]
+  },
+  "typography": {
+    "styles": [
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "56px (3.50rem)",
+        "weight": 400,
+        "lineHeight": "1.14",
+        "spacing": "-1px",
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "40px (2.50rem)",
+        "weight": 400,
+        "lineHeight": "1.20",
+        "spacing": "-0.7px",
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "28px (1.75rem)",
+        "weight": 400,
+        "lineHeight": "1.21",
+        "spacing": "-0.2px",
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Regular",
+        "fallbacks": "Studio Feixen Sans Regular Placeholder",
+        "size": "20px (1.25rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "20px (1.25rem)",
+        "weight": 400,
+        "lineHeight": "1.40",
+        "spacing": "-0.2px",
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "18px (1.13rem)",
+        "weight": 400,
+        "lineHeight": "1.56",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "16px (1.00rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "link",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "16px (1.00rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans Regular",
+        "fallbacks": "Studio Feixen Sans Regular Placeholder",
+        "size": "16px (1.00rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "heading-1",
+        "family": "Studio Feixen Sans",
+        "fallbacks": "Studio Feixen Sans Placeholder",
+        "size": "16px (1.00rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "link",
+        "family": "Studio Feixen Sans Regular",
+        "fallbacks": "Studio Feixen Sans Regular Placeholder",
+        "size": "16px (1.00rem)",
+        "weight": 400,
+        "lineHeight": "1.50",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "caption",
+        "family": "Studio Feixen Sans Regular",
+        "fallbacks": "Studio Feixen Sans Regular Placeholder",
+        "size": "14px (0.88rem)",
+        "weight": 400,
+        "lineHeight": "1.45",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "caption",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "13.3px (0.83rem)",
+        "weight": 400,
+        "lineHeight": "1.56",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "caption",
+        "family": "Studio Feixen Sans Medium",
+        "fallbacks": "Studio Feixen Sans Medium Placeholder",
+        "size": "12px (0.75rem)",
+        "weight": 400,
+        "lineHeight": "1.33",
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "link",
+        "family": "sans-serif",
+        "fallbacks": null,
+        "size": "0px (0.00rem)",
+        "weight": 400,
+        "lineHeight": null,
+        "spacing": null,
+        "transform": null
+      },
+      {
+        "context": "caption",
+        "family": "sans-serif",
+        "fallbacks": null,
+        "size": "0px (0.00rem)",
+        "weight": 400,
+        "lineHeight": null,
+        "spacing": null,
+        "transform": null
+      }
+    ],
+    "sources": {
+      "googleFonts": [],
+      "adobeFonts": false,
+      "variableFonts": false
+    }
+  },
+  "spacing": {
+    "scaleType": "8px",
+    "commonValues": [
+      {
+        "px": "1px",
+        "rem": "0.06rem",
+        "count": 5,
+        "numericValue": 1
+      },
+      {
+        "px": "1.2px",
+        "rem": "0.07rem",
+        "count": 30,
+        "numericValue": 1.2
+      },
+      {
+        "px": "2px",
+        "rem": "0.13rem",
+        "count": 14,
+        "numericValue": 2
+      },
+      {
+        "px": "4.4px",
+        "rem": "0.28rem",
+        "count": 2,
+        "numericValue": 4.4
+      },
+      {
+        "px": "6px",
+        "rem": "0.38rem",
+        "count": 10,
+        "numericValue": 6
+      },
+      {
+        "px": "8px",
+        "rem": "0.50rem",
+        "count": 12,
+        "numericValue": 8
+      },
+      {
+        "px": "9px",
+        "rem": "0.56rem",
+        "count": 16,
+        "numericValue": 9
+      },
+      {
+        "px": "11.8222px",
+        "rem": "0.74rem",
+        "count": 10,
+        "numericValue": 11.8222
+      },
+      {
+        "px": "16px",
+        "rem": "1.00rem",
+        "count": 18,
+        "numericValue": 16
+      },
+      {
+        "px": "20px",
+        "rem": "1.25rem",
+        "count": 2,
+        "numericValue": 20
+      },
+      {
+        "px": "24px",
+        "rem": "1.50rem",
+        "count": 4,
+        "numericValue": 24
+      },
+      {
+        "px": "32px",
+        "rem": "2.00rem",
+        "count": 35,
+        "numericValue": 32
+      },
+      {
+        "px": "40px",
+        "rem": "2.50rem",
+        "count": 3,
+        "numericValue": 40
+      },
+      {
+        "px": "64px",
+        "rem": "4.00rem",
+        "count": 1,
+        "numericValue": 64
+      },
+      {
+        "px": "80px",
+        "rem": "5.00rem",
+        "count": 2,
+        "numericValue": 80
+      },
+      {
+        "px": "88px",
+        "rem": "5.50rem",
+        "count": 6,
+        "numericValue": 88
+      }
+    ]
+  },
+  "borderRadius": {
+    "values": [
+      {
+        "value": "2px",
+        "count": 3,
+        "elements": [
+          "div",
+          "img"
+        ],
+        "confidence": "low",
+        "numericValue": 2
+      },
+      {
+        "value": "8px",
+        "count": 13,
+        "elements": [
+          "div"
+        ],
+        "confidence": "high",
+        "numericValue": 8
+      },
+      {
+        "value": "12px",
+        "count": 26,
+        "elements": [
+          "div",
+          "a"
+        ],
+        "confidence": "high",
+        "numericValue": 12
+      },
+      {
+        "value": "12px 12px 0px 0px",
+        "count": 7,
+        "elements": [
+          "div"
+        ],
+        "confidence": "medium",
+        "numericValue": 12
+      },
+      {
+        "value": "16px",
+        "count": 125,
+        "elements": [
+          "div",
+          "a",
+          "img"
+        ],
+        "confidence": "high",
+        "numericValue": 16
+      },
+      {
+        "value": "40px",
+        "count": 2,
+        "elements": [
+          "Previous",
+          "Next"
+        ],
+        "confidence": "low",
+        "numericValue": 40
+      },
+      {
+        "value": "100px",
+        "count": 15,
+        "elements": [
+          "a",
+          "div"
+        ],
+        "confidence": "high",
+        "numericValue": 100
+      },
+      {
+        "value": "100%",
+        "count": 462,
+        "elements": [
+          "div"
+        ],
+        "confidence": "high",
+        "numericValue": 100
+      },
+      {
+        "value": "2087.68%",
+        "count": 1,
+        "elements": [
+          "div"
+        ],
+        "confidence": "low",
+        "numericValue": 2087.68
+      },
+      {
+        "value": "2386.63%",
+        "count": 1,
+        "elements": [
+          "div"
+        ],
+        "confidence": "low",
+        "numericValue": 2386.63
+      }
+    ]
+  },
+  "borders": {
+    "combinations": []
+  },
+  "shadows": [
+    {
+      "shadow": "rgba(255, 255, 255, 0.64) 0px 1px 2px -1px inset, rgba(255, 255, 255, 0.32) 0px -1px 2px -1px inset",
+      "count": 31,
+      "confidence": "high"
+    },
+    {
+      "shadow": "rgba(255, 255, 255, 0.64) 0px 1px 3px -1px inset, rgba(255, 255, 255, 0.32) 0px -1px 3px -1px inset",
+      "count": 6,
+      "confidence": "high"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.5) 0px 28px 56px -10px",
+      "count": 4,
+      "confidence": "medium"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.16) 0px -1px 6px 0px inset, rgba(255, 255, 255, 0.16) 0px 2px 4px 0px inset",
+      "count": 3,
+      "confidence": "medium"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.16) 0px -1px 6px 0px inset, rgba(255, 255, 255, 0.16) 0px 2px 8px 2px inset, rgba(0, 0, 0, 0.8) 0px 28px 56px -10px",
+      "count": 2,
+      "confidence": "low"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 29.5556px 147.778px 0px",
+      "count": 2,
+      "confidence": "low"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.8) 0px 28px 56px 0px",
+      "count": 1,
+      "confidence": "low"
+    },
+    {
+      "shadow": "rgba(255, 255, 255, 0.32) 0px -0.738889px 2.21667px -0.738889px inset, rgba(255, 255, 255, 0.64) 0px 0.738889px 2.21667px -0.738889px inset",
+      "count": 1,
+      "confidence": "low"
+    },
+    {
+      "shadow": "rgba(0, 0, 0, 0.32) 0px -1px 6px 0px inset, rgba(255, 255, 255, 0.32) 0px 1px 2px 0px inset",
+      "count": 1,
+      "confidence": "low"
+    }
+  ],
+  "components": {
+    "buttons": [],
+    "inputs": {
+      "text": [],
+      "checkbox": [],
+      "radio": [],
+      "select": []
+    },
+    "links": [
+      {
+        "color": "rgb(0, 0, 238)",
+        "textDecoration": "none",
+        "fontWeight": "400",
+        "states": {
+          "default": {
+            "color": "rgb(0, 0, 238)",
+            "textDecoration": "none"
+          },
+          "hover": {
+            "color": "var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-text-color,#000)))",
+            "textDecoration": "var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)))"
+          }
+        }
+      },
+      {
+        "color": "rgb(230, 221, 253)",
+        "textDecoration": "none",
+        "fontWeight": "400",
+        "states": {
+          "default": {
+            "color": "rgb(230, 221, 253)",
+            "textDecoration": "none"
+          },
+          "hover": {
+            "color": "var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-text-color,#000)))",
+            "textDecoration": "var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)))"
+          }
+        }
+      },
+      {
+        "color": "rgb(0, 0, 0)",
+        "textDecoration": "none",
+        "fontWeight": "400",
+        "states": {
+          "default": {
+            "color": "rgb(0, 0, 0)",
+            "textDecoration": "none"
+          },
+          "hover": {
+            "color": "var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-text-color,#000)))",
+            "textDecoration": "var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)))"
+          }
+        }
+      }
+    ],
+    "badges": {
+      "all": [],
+      "byVariant": {
+        "error": [],
+        "warning": [],
+        "success": [],
+        "info": [],
+        "neutral": []
+      }
+    }
+  },
+  "breakpoints": [
+    {
+      "px": "809px"
+    },
+    {
+      "px": "810px"
+    },
+    {
+      "px": "1199px"
+    },
+    {
+      "px": "1200px"
+    },
+    {
+      "px": "1439px"
+    }
+  ],
+  "iconSystem": [],
+  "frameworks": [
+    {
+      "name": "Quasar",
+      "confidence": "high",
+      "evidence": "7 q- components"
+    }
+  ]
+}

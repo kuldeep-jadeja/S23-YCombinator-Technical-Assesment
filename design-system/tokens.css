@@ -1,0 +1,20 @@
+:root {
+  --font-heading: Studio Feixen Sans Medium;
+  --font-body: Studio Feixen Sans Medium;
+  --space-1: 1px;
+  --space-2: 1.2px;
+  --space-3: 2px;
+  --space-4: 4.4px;
+  --space-5: 6px;
+  --space-6: 8px;
+  --space-7: 9px;
+  --space-8: 11.8222px;
+  --space-9: 16px;
+  --space-10: 20px;
+  --space-11: 24px;
+  --space-12: 32px;
+  --space-13: 40px;
+  --space-14: 64px;
+  --space-15: 80px;
+  --space-16: 88px;
+}

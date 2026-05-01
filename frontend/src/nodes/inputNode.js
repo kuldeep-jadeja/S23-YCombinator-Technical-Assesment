@@ -1,0 +1,37 @@
+// inputNode.js
+import { useState } from 'react';
+import { BaseNode, NodeField, NodeInput, NodeSelect } from './BaseNode';
+
+const config = {
+  nodeType: 'Input',
+  headerColor: '#10b981',
+  icon: '→',
+  inputs: [],
+  outputs: [{ id: 'value', label: 'value' }],
+};
+
+export const InputNode = ({ id, data }) => {
+  const [currName, setCurrName] = useState(data?.inputName || id.replace('customInput-', 'input_'));
+  const [inputType, setInputType] = useState(data?.inputType || 'Text');
+
+  return (
+    <BaseNode id={id} data={data} config={config}>
+      <NodeField label="Name">
+        <NodeInput
+          type="text"
+          value={currName}
+          onChange={(e) => setCurrName(e.target.value)}
+          placeholder="input_name"
+        />
+      </NodeField>
+      <NodeField label="Type">
+        <NodeSelect value={inputType} onChange={(e) => setInputType(e.target.value)}>
+          <option value="Text">Text</option>
+          <option value="File">File</option>
+          <option value="Image">Image</option>
+          <option value="Number">Number</option>
+        </NodeSelect>
+      </NodeField>
+    </BaseNode>
+  );
+};
