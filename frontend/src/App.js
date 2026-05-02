@@ -9,7 +9,7 @@ function App() {
   const [edges, setEdges] = useState([]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#080c12' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-canvas)' }}>
       <PipelineToolbar />
       <PipelineUI nodes={nodes} setNodes={setNodes} edges={edges} setEdges={setEdges} />
       <SubmitButton nodes={nodes} edges={edges} />

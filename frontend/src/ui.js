@@ -1,4 +1,4 @@
-// ui.js — VectorShift-styled ReactFlow pipeline canvas (light mode)
+// ui.js — Claude-styled ReactFlow pipeline canvas (light mode)
 import { useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
@@ -34,15 +34,15 @@ const nodeTypes = {
 
 // Node color map for MiniMap
 const nodeColorMap = {
-  customInput: '#10b981',
-  llm: '#8b5cf6',
-  customOutput: '#f59e0b',
-  text: '#0ea5e9',
-  apiRequest: '#f43f5e',
-  conditional: '#ec4899',
-  transform: '#14b8a6',
-  note: '#eab308',
-  vectorSearch: '#a855f7',
+  customInput: '#5db8a6',
+  llm: '#cc785c',
+  customOutput: '#e8a55a',
+  text: '#6c6a64',
+  apiRequest: '#c64545',
+  conditional: '#d4a017',
+  transform: '#5db872',
+  note: '#e8a55a',
+  vectorSearch: '#3d3d3a',
 };
 
 // Inner component — must be inside ReactFlowProvider to use useReactFlow()
@@ -72,8 +72,8 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
           ...connection,
           type: 'smoothstep',
           animated: true,
-          markerEnd: { type: 'arrowclosed', height: 16, width: 16, color: '#8b5cf6' },
-          style: { stroke: '#8b5cf6', strokeWidth: 2 },
+          markerEnd: { type: 'arrowclosed', height: 16, width: 16, color: '#cc785c' },
+          style: { stroke: '#cc785c', strokeWidth: 2 },
         })
       ),
     [activeSetEdges]
@@ -109,7 +109,7 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
   return (
     <div
       ref={reactFlowWrapper}
-      style={{ width: '100vw', height: 'calc(100vh - 56px - 52px)' }}
+      style={{ flex: 1, width: '100vw' }}
     >
       <ReactFlow
         nodes={activeNodes}
@@ -125,21 +125,21 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
         snapToGrid
         connectionLineType="smoothstep"
         defaultEdgeOptions={{
-          style: { stroke: '#8b5cf6', strokeWidth: 2 },
+          style: { stroke: '#cc785c', strokeWidth: 2 },
           animated: true,
         }}
       >
         {/* Dot grid pattern */}
-        <Background color="#e2e8f0" gap={gridSize} variant="dots" size={1} />
+        <Background color="#e6dfd8" gap={gridSize} variant="dots" size={1.5} />
         <Controls />
         <MiniMap
           style={{
-            background: 'var(--bg-primary)',
+            background: 'var(--bg-canvas)',
             border: '1px solid var(--border-light)',
             borderRadius: 'var(--radius-md)',
           }}
-          nodeColor={(node) => nodeColorMap[node.type] || '#8b5cf6'}
-          maskColor="rgba(255, 255, 255, 0.8)"
+          nodeColor={(node) => nodeColorMap[node.type] || '#cc785c'}
+          maskColor="rgba(250, 249, 245, 0.8)"
         />
       </ReactFlow>
     </div>

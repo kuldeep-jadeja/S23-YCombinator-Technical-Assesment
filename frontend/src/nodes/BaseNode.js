@@ -1,10 +1,9 @@
-// BaseNode.js — Core abstraction for all pipeline nodes
-// VectorShift-inspired light mode design with solid headers
+// BaseNode.js — Claude-inspired light mode design with solid headers
 import { Handle, Position } from 'reactflow';
 
 /**
  * BaseNode renders any node from a declarative config object.
- * Uses VectorShift two-toned design: solid color header + white body.
+ * Uses Claude-inspired warm canvas design.
  *
  * Config shape:
  * {
@@ -146,9 +145,10 @@ const iconStyle = {
 };
 
 const headerTextStyle = {
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: '-0.01em',
+  fontSize: 16,
+  fontFamily: 'var(--font-heading)',
+  fontWeight: 400,
+  letterSpacing: '0',
   color: '#ffffff',
 };
 
@@ -189,11 +189,12 @@ export const fieldWrapStyle = {
 };
 
 export const fieldLabelStyle = {
-  fontSize: 11,
-  fontWeight: 600,
+  fontSize: 12,
+  fontWeight: 500,
   color: 'var(--text-secondary)',
-  letterSpacing: '0.02em',
+  letterSpacing: '1.5px',
   textTransform: 'uppercase',
+  fontFamily: 'var(--font-body)',
 };
 
 const sharedInputStyle = {

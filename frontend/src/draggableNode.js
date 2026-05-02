@@ -1,5 +1,5 @@
-// draggableNode.js — VectorShift-inspired draggable node palette items (light mode)
-export const DraggableNode = ({ type, label, color = '#8b5cf6', icon = '⬡' }) => {
+// draggableNode.js — Claude-inspired draggable node palette items (light mode)
+export const DraggableNode = ({ type, label, color = 'var(--accent-primary)', icon = '⬡' }) => {
   const onDragStart = (event, nodeType) => {
     const appData = { nodeType };
     event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
@@ -18,18 +18,18 @@ export const DraggableNode = ({ type, label, color = '#8b5cf6', icon = '⬡' }) 
         gap: 6,
         padding: '8px 14px',
         borderRadius: 'var(--radius-md)',
-        background: 'var(--bg-primary)',
+        background: 'var(--bg-canvas)',
         border: '1px solid var(--border-light)',
         borderLeft: `3px solid ${color}`,
         fontFamily: 'var(--font-body)',
-        fontSize: 12,
-        fontWeight: 500,
+        fontSize: 13,
+        fontWeight: 400,
         color: 'var(--text-primary)',
         whiteSpace: 'nowrap',
         transition: 'all var(--transition-fast)',
         userSelect: 'none',
         flexShrink: 0,
-        boxShadow: 'var(--shadow-xs)',
+        boxShadow: 'none',
       }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = `${color}`;
@@ -39,7 +39,7 @@ export const DraggableNode = ({ type, label, color = '#8b5cf6', icon = '⬡' }) 
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = 'var(--border-light)';
         e.currentTarget.style.borderLeftColor = `${color}`;
-        e.currentTarget.style.background = 'var(--bg-primary)';
+        e.currentTarget.style.background = 'var(--bg-canvas)';
       }}
     >
       <span style={{ fontSize: 14, color }}>{icon}</span>
