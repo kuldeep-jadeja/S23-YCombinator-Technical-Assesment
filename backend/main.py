@@ -1,14 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Any
+from typing import Any, Optional
 
 app = FastAPI()
 
-# Allow requests from the React dev server
+# Allow requests from all development and production origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,25 +25,44 @@ class Pipeline(BaseModel):
     edges: list[dict[str, Any]]
 
 
+class PipelineResponse(BaseModel):
+    num_nodes: int
+    num_edges: int
+    is_dag: bool
+    warning: Optional[str] = None
+
+
 @app.get("/")
 def read_root():
     return {"Ping": "Pong"}
 
 
-@app.post("/pipelines/parse")
+@app.post("/pipelines/parse", response_model=PipelineResponse)
 def parse_pipeline(pipeline: Pipeline):
     nodes = pipeline.nodes
     edges = pipeline.edges
 
     num_nodes = len(nodes)
     num_edges = len(edges)
+
+    # Handle empty pipeline
+    if num_nodes == 0:
+        return PipelineResponse(
+            num_nodes=0,
+            num_edges=0,
+            is_dag=True,
+            warning="Empty pipeline — add nodes to build your workflow"
+        )
+
+    # Check if DAG
     dag = is_dag(nodes, edges)
 
-    return {
-        "num_nodes": num_nodes,
-        "num_edges": num_edges,
-        "is_dag": dag,
-    }
+    return PipelineResponse(
+        num_nodes=num_nodes,
+        num_edges=num_edges,
+        is_dag=dag,
+        warning=None if dag else "Pipeline contains a cycle — fix circular connections"
+    )
 
 
 def is_dag(nodes: list[dict], edges: list[dict]) -> bool:
@@ -46,6 +70,9 @@ def is_dag(nodes: list[dict], edges: list[dict]) -> bool:
     Returns True if the graph formed by nodes+edges is a Directed Acyclic Graph.
     Uses Kahn's algorithm (topological sort via in-degree counting).
     """
+    if not nodes:
+        return True  # Empty graph is technically a DAG
+
     node_ids = {n["id"] for n in nodes}
 
     # Build adjacency list and in-degree map

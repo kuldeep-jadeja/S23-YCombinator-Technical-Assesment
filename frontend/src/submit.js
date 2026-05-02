@@ -1,6 +1,6 @@
-// submit.js — Claude-styled pipeline submission (light mode)
+// submit.js — Pipeline validation with backend integration
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
 export const SubmitButton = ({ nodes = [], edges = [] }) => {
   const [loading, setLoading] = useState(false);
@@ -34,6 +34,14 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
           <Chip label="Nodes" value={nodes.length} color="var(--node-transform)" />
           <Chip label="Edges" value={edges.length} color="var(--accent-primary)" />
         </div>
+
+        {loading && (
+          <div style={loadingIndicatorStyle}>
+            <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+            <span style={loadingTextStyle}>Analyzing pipeline...</span>
+          </div>
+        )}
+
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -42,7 +50,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
           onMouseLeave={e => !loading && (e.currentTarget.style.background = 'var(--accent-primary)')}
         >
           {loading ? (
-            <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Analyzing…</>
+            <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Validating...</>
           ) : (
             'Validate Pipeline'
           )}
@@ -55,23 +63,40 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
           <div style={modalStyle} onClick={e => e.stopPropagation()}>
             {error ? (
               <>
-                <div style={{ ...modalHeaderStyle, borderColor: 'var(--node-api)' }}>
+                <div style={errorHeaderStyle}>
+                  <XCircle size={24} color="var(--node-api)" />
                   <span style={{ color: 'var(--node-api)', fontSize: 18, fontFamily: 'var(--font-heading)' }}>Connection Error</span>
                 </div>
                 <p style={modalBodyStyle}>{error}</p>
                 <p style={{ ...modalBodyStyle, fontSize: 13, color: 'var(--text-secondary)' }}>
-                  Make sure the backend is running: <code style={codeStyle}>uvicorn main:app --reload</code>
+                  Make sure the backend is running:
                 </p>
+                <code style={codeStyle}>cd backend && uvicorn main:app --reload</code>
               </>
             ) : (
               <>
-                <div style={{ ...modalHeaderStyle, borderColor: result.is_dag ? 'var(--node-transform)' : 'var(--node-conditional)' }}>
-                  <span style={{ color: result.is_dag ? 'var(--node-transform)' : 'var(--node-conditional)', fontSize: 24, fontFamily: 'var(--font-heading)' }}>
+                <div style={{
+                  ...modalHeaderStyle,
+                  borderColor: result.is_dag ? 'var(--node-transform)' : 'var(--node-conditional)'
+                }}>
+                  <div style={statusIconStyle}>
+                    {result.is_dag ? (
+                      <CheckCircle2 size={28} color="var(--node-transform)" />
+                    ) : (
+                      <XCircle size={28} color="var(--node-conditional)" />
+                    )}
+                  </div>
+                  <span style={{
+                    color: result.is_dag ? 'var(--node-transform)' : 'var(--node-conditional)',
+                    fontSize: 22,
+                    fontFamily: 'var(--font-heading)'
+                  }}>
                     {result.is_dag ? 'Valid DAG' : 'Cycle Detected'}
                   </span>
                 </div>
+
                 <div style={metricsStyle}>
-                  <Metric label="Nodes" value={result.num_nodes} color="var(--node-transform)" />
+                  <Metric label="Nodes" value={result.num_nodes} color="var(--node-text-header)" />
                   <Metric label="Edges" value={result.num_edges} color="var(--accent-primary)" />
                   <Metric
                     label="Is DAG"
@@ -79,10 +104,19 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
                     color={result.is_dag ? 'var(--node-transform)' : 'var(--node-conditional)'}
                   />
                 </div>
+
+                {/* Warning message if present */}
+                {result.warning && (
+                  <div style={warningStyle}>
+                    <AlertCircle size={14} />
+                    <span>{result.warning}</span>
+                  </div>
+                )}
+
                 <p style={{ ...modalBodyStyle, fontSize: 14, marginTop: 16 }}>
                   {result.is_dag
                     ? 'Pipeline has no cycles — safe to execute.'
-                    : 'Pipeline contains a cycle. Fix circular connections before execution.'}
+                    : 'Pipeline contains a cycle. Remove circular connections before execution.'}
                 </p>
               </>
             )}
@@ -133,12 +167,24 @@ const barStyle = {
   padding: '12px 24px',
   background: 'var(--bg-canvas)',
   borderTop: '1px solid var(--border-light)',
-  boxShadow: 'none',
 };
 
 const statsStyle = {
   display: 'flex',
   gap: 24,
+};
+
+const loadingIndicatorStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  animation: 'fadeIn 0.2s ease',
+};
+
+const loadingTextStyle = {
+  fontFamily: 'var(--font-body)',
 };
 
 const btnStyle = {
@@ -155,25 +201,25 @@ const btnStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: 8,
-  transition: 'background var(--transition-fast), transform var(--transition-fast)',
+  transition: 'background var(--transition-fast)',
   boxShadow: 'var(--shadow-sm)',
 };
 
 const btnDisabledStyle = {
   opacity: 0.6,
   cursor: 'not-allowed',
-  transform: 'none',
 };
 
 const overlayStyle = {
   position: 'fixed',
   inset: 0,
-  background: 'rgba(0, 0, 0, 0.5)',
+  background: 'rgba(20, 20, 19, 0.6)',
   backdropFilter: 'blur(4px)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   zIndex: 1000,
+  animation: 'fadeIn 0.2s ease',
 };
 
 const modalStyle = {
@@ -181,18 +227,34 @@ const modalStyle = {
   border: '1px solid var(--border-light)',
   borderRadius: 'var(--radius-xl)',
   padding: 24,
-  minWidth: 360,
-  maxWidth: 440,
+  minWidth: 380,
+  maxWidth: 460,
   boxShadow: 'var(--shadow-lg)',
   fontFamily: 'var(--font-body)',
+  animation: 'slideUp 0.2s ease',
 };
 
 const modalHeaderStyle = {
-  fontSize: 16,
-  fontWeight: 700,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 12,
+  paddingBottom: 20,
   marginBottom: 20,
-  paddingBottom: 16,
   borderBottom: '1px solid var(--border-light)',
+};
+
+const errorHeaderStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 12,
+  paddingBottom: 16,
+  marginBottom: 16,
+  borderBottom: '1px solid var(--border-light)',
+};
+
+const statusIconStyle = {
+  marginBottom: 4,
 };
 
 const modalBodyStyle = {
@@ -200,6 +262,20 @@ const modalBodyStyle = {
   color: 'var(--text-secondary)',
   lineHeight: 1.6,
   margin: 0,
+  textAlign: 'center',
+};
+
+const warningStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  padding: '10px 14px',
+  marginTop: 16,
+  background: 'var(--node-output-bg)',
+  border: '1px solid var(--node-output)',
+  borderRadius: 'var(--radius-md)',
+  fontSize: 12,
+  color: 'var(--node-output-header)',
 };
 
 const metricsStyle = {
@@ -224,10 +300,12 @@ const closeBtnStyle = {
 };
 
 const codeStyle = {
+  display: 'block',
+  margin: '8px 0 16px',
   background: 'var(--bg-secondary)',
-  padding: '2px 8px',
+  padding: '8px 12px',
   borderRadius: 'var(--radius-sm)',
-  fontSize: 11,
+  fontSize: 12,
   color: 'var(--accent-primary)',
   fontFamily: 'var(--font-mono)',
 };
