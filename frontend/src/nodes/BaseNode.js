@@ -1,5 +1,6 @@
 // BaseNode.js — Claude-inspired light mode design with solid headers
 import { Handle, Position } from 'reactflow';
+import { isValidElement, useRef, useEffect } from 'react';
 
 /**
  * BaseNode renders any node from a declarative config object.
@@ -8,24 +9,24 @@ import { Handle, Position } from 'reactflow';
  * Config shape:
  * {
  *   nodeType: string,           // display label in header
- *   headerColor: string,     // accent color for solid header
- *   icon: string,             // emoji or short string shown in header
- *   minWidth: number,         // minimum width in px (default 240)
- *   inputs: [{ id, label }],  // left-side target handles
- *   outputs: [{ id, label }],  // right-side source handles
+ *   headerColor: string,        // accent color for solid header
+ *   icon: ReactComponent,       // Lucide icon component shown in header
+ *   minWidth: number,           // minimum width in px (default 240)
+ *   inputs: [{ id, label }],    // left-side target handles
+ *   outputs: [{ id, label }],   // right-side source handles
  * }
  */
 export const BaseNode = ({ id, data, config, children, style: extraStyle = {} }) => {
   const {
     nodeType = 'Node',
     headerColor = '#8b5cf6',
-    icon = '⬡',
+    icon: IconComponent,
     minWidth = 240,
     inputs = [],
     outputs = [],
   } = config;
 
-  // Distribute handles evenly along the edge
+  // Distribute handles evenly along the edge with better spacing
   const inputPositions = distributeHandles(inputs.length);
   const outputPositions = distributeHandles(outputs.length);
 
@@ -37,7 +38,10 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
     }}>
       {/* Left-side target handles */}
       {inputs.map((handle, i) => (
-        <div key={handle.id}>
+        <div key={handle.id} style={handleContainerStyle}>
+          <span style={{ ...inputHandleLabelStyle, top: `${inputPositions[i]}%` }}>
+            {handle.label}
+          </span>
           <Handle
             type="target"
             position={Position.Left}
@@ -50,9 +54,6 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
               ...(handle.style || {})
             }}
           />
-          <span style={{ ...handleLabelStyle, left: 14, top: `calc(${inputPositions[i]}% - 7px)` }}>
-            {handle.label}
-          </span>
         </div>
       ))}
 
@@ -61,7 +62,13 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
         ...headerStyle,
         background: headerColor,
       }}>
-        <span style={iconStyle}>{icon}</span>
+        {IconComponent && (
+          isValidElement(IconComponent) ? (
+            IconComponent
+          ) : (
+            <IconComponent size={16} color="#ffffff" strokeWidth={2} style={{ flexShrink: 0 }} />
+          )
+        )}
         <span style={headerTextStyle}>{nodeType}</span>
       </div>
 
@@ -72,7 +79,7 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
 
       {/* Right-side source handles */}
       {outputs.map((handle, i) => (
-        <div key={handle.id}>
+        <div key={handle.id} style={handleContainerStyle}>
           <Handle
             type="source"
             position={Position.Right}
@@ -85,7 +92,7 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
               ...(handle.style || {})
             }}
           />
-          <span style={{ ...handleLabelStyle, right: 14, top: `calc(${outputPositions[i]}% - 7px)`, textAlign: 'right' }}>
+          <span style={{ ...outputHandleLabelStyle, top: `${outputPositions[i]}%` }}>
             {handle.label}
           </span>
         </div>
@@ -108,12 +115,38 @@ export const NodeSelect = ({ children, ...props }) => (
 );
 export const NodeTextarea = (props) => <textarea style={textareaStyle} {...props} />;
 
+// ─── Auto-resizing Textarea ─────────────────────────────────────────────────
+export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.max(textarea.scrollHeight, 40)}px`;
+    }
+  }, [value]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      value={value}
+      onChange={onChange}
+      style={autoResizeTextareaStyle}
+      {...props}
+    />
+  );
+};
+
 // ─── Handle distribution helper ──────────────────────────────────────────────
 function distributeHandles(count) {
   if (count === 0) return [];
   if (count === 1) return [50];
-  const step = 100 / (count + 1);
-  return Array.from({ length: count }, (_, i) => Math.round(step * (i + 1)));
+  // Better spacing: leave more room at edges
+  const start = 20;
+  const end = 80;
+  const step = (end - start) / (count + 1);
+  return Array.from({ length: count }, (_, i) => Math.round(start + step * (i + 1)));
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
@@ -138,12 +171,6 @@ const headerStyle = {
   position: 'relative',
 };
 
-const iconStyle = {
-  fontSize: 14,
-  lineHeight: 1,
-  color: '#ffffff',
-};
-
 const headerTextStyle = {
   fontSize: 16,
   fontFamily: 'var(--font-heading)',
@@ -160,6 +187,14 @@ const bodyStyle = {
   background: 'var(--bg-primary)',
 };
 
+const handleContainerStyle = {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  height: 0,
+  pointerEvents: 'none',
+};
+
 const handleStyle = {
   width: 10,
   height: 10,
@@ -168,8 +203,10 @@ const handleStyle = {
   transition: 'transform var(--transition-fast), box-shadow var(--transition-fast)',
 };
 
-const handleLabelStyle = {
+const inputHandleLabelStyle = {
   position: 'absolute',
+  left: 22,
+  transform: 'translateY(-50%)',
   fontSize: 10,
   color: 'var(--text-secondary)',
   fontWeight: 500,
@@ -180,7 +217,28 @@ const handleLabelStyle = {
   padding: '2px 6px',
   borderRadius: 4,
   boxShadow: 'var(--shadow-xs)',
+  zIndex: 1,
 };
+
+const outputHandleLabelStyle = {
+  position: 'absolute',
+  right: 22,
+  transform: 'translateY(-50%)',
+  fontSize: 10,
+  color: 'var(--text-secondary)',
+  fontWeight: 500,
+  letterSpacing: '0.01em',
+  pointerEvents: 'none',
+  whiteSpace: 'nowrap',
+  background: 'var(--bg-primary)',
+  padding: '2px 6px',
+  borderRadius: 4,
+  boxShadow: 'var(--shadow-xs)',
+  zIndex: 1,
+  textAlign: 'right',
+};
+
+export const handleLabelStyle = inputHandleLabelStyle;
 
 export const fieldWrapStyle = {
   display: 'flex',
@@ -217,5 +275,13 @@ export const textareaStyle = {
   ...sharedInputStyle,
   resize: 'none',
   lineHeight: 1.5,
-  minHeight: 56,
+  minHeight: 40,
+};
+
+const autoResizeTextareaStyle = {
+  ...sharedInputStyle,
+  resize: 'none',
+  lineHeight: 1.5,
+  minHeight: 40,
+  overflow: 'hidden',
 };

@@ -1,26 +1,25 @@
 // llmNode.js
 import { useState } from 'react';
-import { BaseNode, NodeField, NodeSelect } from './BaseNode';
+import { Sparkles } from 'lucide-react';
+import { BaseNode, NodeField, NodeSelect, AutoResizeTextarea } from './BaseNode';
 
 const config = {
   nodeType: 'LLM',
-  headerColor: '#8b5cf6',
-  icon: '✦',
+  headerColor: 'var(--node-llm-header)',
+  icon: Sparkles,
   inputs: [
-    { id: 'system', label: 'system' },
-    { id: 'prompt', label: 'prompt' },
+    { id: 'system', label: 'System' },
+    { id: 'prompt', label: 'Prompt' },
   ],
-  outputs: [{ id: 'response', label: 'response' }],
+  outputs: [{ id: 'response', label: 'Response' }],
 };
 
 export const LLMNode = ({ id, data }) => {
   const [model, setModel] = useState(data?.model || 'gpt-4o');
+  const [systemPrompt, setSystemPrompt] = useState(data?.systemPrompt || '');
 
   return (
     <BaseNode id={id} data={data} config={config}>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 8 }}>
-        Large Language Model node. Connect a system prompt and user prompt to generate a response.
-      </div>
       <NodeField label="Model">
         <NodeSelect value={model} onChange={(e) => setModel(e.target.value)}>
           <option value="gpt-4o">GPT-4o</option>
@@ -29,6 +28,13 @@ export const LLMNode = ({ id, data }) => {
           <option value="claude-sonnet-4">Claude Sonnet 4</option>
           <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
         </NodeSelect>
+      </NodeField>
+      <NodeField label="System prompt">
+        <AutoResizeTextarea
+          value={systemPrompt}
+          onChange={(e) => setSystemPrompt(e.target.value)}
+          placeholder="You are a helpful assistant..."
+        />
       </NodeField>
     </BaseNode>
   );

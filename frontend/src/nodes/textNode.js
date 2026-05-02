@@ -1,15 +1,15 @@
 // textNode.js — Dynamic resize + {{variable}} → Handle generation (light mode)
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
-import { BaseNode, fieldLabelStyle, fieldWrapStyle } from './BaseNode';
+import { Type } from 'lucide-react';
+import { BaseNode, fieldLabelStyle, fieldWrapStyle, handleLabelStyle } from './BaseNode';
 
 const VARIABLE_REGEX = /\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g;
-const HEADER_COLOR = '#0ea5e9';
 
 const baseConfig = {
   nodeType: 'Text',
-  headerColor: HEADER_COLOR,
-  icon: 'T',
+  headerColor: 'var(--node-text-header)',
+  icon: Type,
   inputs: [],
   outputs: [{ id: 'output', label: 'output' }],
 };
@@ -45,21 +45,25 @@ export const TextNode = ({ id, data }) => {
     >
       {/* Variable Handles - left side, dynamic */}
       {variables.map((varName, i) => (
-        <Handle
-          key={varName}
-          type="target"
-          position={Position.Left}
-          id={`${id}-${varName}`}
-          style={{
-            top: `${varHandlePositions[i]}%`,
-            width: 10,
-            height: 10,
-            background: HEADER_COLOR,
-            border: '2px solid var(--bg-primary)',
-            borderRadius: '50%',
-          }}
-          title={varName}
-        />
+        <div key={varName}>
+          <Handle
+            type="target"
+            position={Position.Left}
+            id={`${id}-${varName}`}
+            style={{
+              top: `${varHandlePositions[i]}%`,
+              width: 10,
+              height: 10,
+              background: 'var(--node-text-header)',
+              border: '2px solid var(--bg-primary)',
+              borderRadius: '50%',
+            }}
+            title={varName}
+          />
+          <span style={{ ...handleLabelStyle, left: 14, top: `calc(${varHandlePositions[i]}% - 7px)` }}>
+            {varName}
+          </span>
+        </div>
       ))}
 
       {/* Text Content Field */}
@@ -94,10 +98,10 @@ export const TextNode = ({ id, data }) => {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
           {variables.map(v => (
             <span key={v} style={{
-              background: `${HEADER_COLOR}15`,
-              border: `1px solid ${HEADER_COLOR}30`,
+              background: 'var(--node-text-bg)',
+              border: '1px solid var(--node-text)',
               borderRadius: 4,
-              color: HEADER_COLOR,
+              color: 'var(--node-text)',
               fontSize: 11,
               padding: '3px 8px',
               fontFamily: 'var(--font-body)',

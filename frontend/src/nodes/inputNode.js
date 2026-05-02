@@ -1,13 +1,14 @@
 // inputNode.js
 import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { BaseNode, NodeField, NodeInput, NodeSelect } from './BaseNode';
 
 const config = {
   nodeType: 'Input',
-  headerColor: '#10b981',
-  icon: '→',
+  headerColor: 'var(--node-input-header)',
+  icon: ArrowRight,
   inputs: [],
-  outputs: [{ id: 'value', label: 'value' }],
+  outputs: [{ id: 'value', label: 'Value' }],
 };
 
 export const InputNode = ({ id, data }) => {

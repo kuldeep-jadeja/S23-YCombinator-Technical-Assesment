@@ -2,17 +2,7 @@
 import { useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
-import { InputNode } from './nodes/inputNode';
-import { LLMNode } from './nodes/llmNode';
-import { OutputNode } from './nodes/outputNode';
-import { TextNode } from './nodes/textNode';
-import {
-  APIRequestNode,
-  ConditionalNode,
-  TransformNode,
-  NoteNode,
-  VectorSearchNode,
-} from './nodes/customNodes';
+import { InputNode, OutputNode, LLMNode, TextNode, APIRequestNode, ConditionalNode, TransformNode, NoteNode, VectorSearchNode } from './nodes/index';
 import { useStore } from './store';
 
 import 'reactflow/dist/style.css';
@@ -32,17 +22,17 @@ const nodeTypes = {
   vectorSearch: VectorSearchNode,
 };
 
-// Node color map for MiniMap
+// Node color map for MiniMap - uses CSS tokens
 const nodeColorMap = {
-  customInput: '#5db8a6',
-  llm: '#cc785c',
-  customOutput: '#e8a55a',
-  text: '#6c6a64',
-  apiRequest: '#c64545',
-  conditional: '#d4a017',
-  transform: '#5db872',
-  note: '#e8a55a',
-  vectorSearch: '#3d3d3a',
+  customInput: 'var(--node-input)',
+  llm: 'var(--node-llm)',
+  customOutput: 'var(--node-output)',
+  text: 'var(--node-text)',
+  apiRequest: 'var(--node-api)',
+  conditional: 'var(--node-conditional)',
+  transform: 'var(--node-transform)',
+  note: 'var(--node-note)',
+  vectorSearch: 'var(--node-vector)',
 };
 
 // Inner component — must be inside ReactFlowProvider to use useReactFlow()

@@ -33,39 +33,39 @@
 
     /* Node Type Colors */
     --node-input: #5db8a6; /* accent-teal */
-    --node-input-header: #5db8a6;
+    --node-input-header: #10b981;
     --node-input-bg: rgba(93, 184, 166, 0.08);
 
     --node-output: #e8a55a; /* accent-amber */
-    --node-output-header: #e8a55a;
+    --node-output-header: #f59e0b;
     --node-output-bg: rgba(232, 165, 90, 0.08);
 
     --node-llm: #cc785c; /* primary */
-    --node-llm-header: #cc785c;
+    --node-llm-header: #8b5cf6;
     --node-llm-bg: rgba(204, 120, 92, 0.08);
 
     --node-text: #6c6a64; /* muted */
-    --node-text-header: #6c6a64;
+    --node-text-header: #0ea5e9;
     --node-text-bg: rgba(108, 106, 100, 0.08);
 
     --node-api: #c64545; /* error */
-    --node-api-header: #c64545;
+    --node-api-header: #f43f5e;
     --node-api-bg: rgba(198, 69, 69, 0.08);
 
     --node-conditional: #d4a017; /* warning */
-    --node-conditional-header: #d4a017;
+    --node-conditional-header: #ec4899;
     --node-conditional-bg: rgba(212, 160, 23, 0.08);
 
     --node-transform: #5db872; /* success */
-    --node-transform-header: #5db872;
+    --node-transform-header: #14b8a6;
     --node-transform-bg: rgba(93, 184, 114, 0.08);
 
     --node-note: #e8a55a;
-    --node-note-header: #e8a55a;
+    --node-note-header: #eab308;
     --node-note-bg: rgba(232, 165, 90, 0.08);
 
     --node-vector: #3d3d3a;
-    --node-vector-header: #3d3d3a;
+    --node-vector-header: #a855f7;
     --node-vector-bg: rgba(61, 61, 58, 0.08);
 
     /* Accent Colors */
@@ -240,4 +240,26 @@ button:disabled {
 /* React Flow Attribution */
 .react-flow__attribution {
     display: none;
+}
+
+/* Keyframes */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

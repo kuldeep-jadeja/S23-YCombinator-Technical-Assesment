@@ -1,12 +1,13 @@
 // outputNode.js
 import { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { BaseNode, NodeField, NodeInput, NodeSelect } from './BaseNode';
 
 const config = {
   nodeType: 'Output',
-  headerColor: '#f59e0b',
-  icon: '←',
-  inputs: [{ id: 'value', label: 'value' }],
+  headerColor: 'var(--node-output-header)',
+  icon: ArrowLeft,
+  inputs: [{ id: 'value', label: 'Value' }],
   outputs: [],
 };
 

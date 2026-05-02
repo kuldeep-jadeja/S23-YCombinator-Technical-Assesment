@@ -1,24 +1,26 @@
 // customNodes.js — 5 new nodes built with BaseNode abstraction
 import { useState } from 'react';
-import { BaseNode, NodeField, NodeInput, NodeSelect, NodeTextarea } from './BaseNode';
+import { ArrowLeftRight, GitBranch, RefreshCw, StickyNote, Database } from 'lucide-react';
+import { BaseNode, NodeField, NodeInput, NodeSelect, AutoResizeTextarea } from './BaseNode';
 
 // ─── 1. API Request Node ─────────────────────────────────────────────────────
 const apiConfig = {
   nodeType: 'API Request',
-  headerColor: '#f43f5e',
-  icon: '⇄',
+  headerColor: 'var(--node-api-header)',
+  icon: ArrowLeftRight,
   inputs: [
-    { id: 'url', label: 'url' },
-    { id: 'body', label: 'body' },
+    { id: 'url', label: 'URL' },
+    { id: 'body', label: 'Body' },
   ],
   outputs: [
-    { id: 'response', label: 'response' },
-    { id: 'status', label: 'status' },
+    { id: 'response', label: 'Response' },
+    { id: 'status', label: 'Status' },
   ],
 };
 
 export const APIRequestNode = ({ id, data }) => {
   const [method, setMethod] = useState(data?.method || 'GET');
+  const [url, setUrl] = useState(data?.url || '');
   const [headers, setHeaders] = useState(data?.headers || '');
 
   return (
@@ -32,12 +34,19 @@ export const APIRequestNode = ({ id, data }) => {
           <option>DELETE</option>
         </NodeSelect>
       </NodeField>
+      <NodeField label="URL">
+        <NodeInput
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://api.example.com/endpoint"
+        />
+      </NodeField>
       <NodeField label="Headers (JSON)">
-        <NodeTextarea
+        <AutoResizeTextarea
           value={headers}
           onChange={(e) => setHeaders(e.target.value)}
-          placeholder={'{"Authorization": "Bearer ..."}'}
-          style={{ minHeight: 'var(--space-11)', resize: 'none' }}
+          placeholder='{"Authorization": "Bearer ..."}'
         />
       </NodeField>
     </BaseNode>
@@ -47,12 +56,12 @@ export const APIRequestNode = ({ id, data }) => {
 // ─── 2. Conditional / Router Node ────────────────────────────────────────────
 const conditionalConfig = {
   nodeType: 'Condition',
-  headerColor: '#ec4899',
-  icon: '⟁',
-  inputs: [{ id: 'value', label: 'value' }],
+  headerColor: 'var(--node-conditional-header)',
+  icon: GitBranch,
+  inputs: [{ id: 'value', label: 'Value' }],
   outputs: [
-    { id: 'true', label: 'true' },
-    { id: 'false', label: 'false' },
+    { id: 'true', label: 'True' },
+    { id: 'false', label: 'False' },
   ],
 };
 
@@ -87,10 +96,10 @@ export const ConditionalNode = ({ id, data }) => {
 // ─── 3. Data Transform Node ───────────────────────────────────────────────────
 const transformConfig = {
   nodeType: 'Transform',
-  headerColor: '#14b8a6',
-  icon: '⟳',
-  inputs: [{ id: 'input', label: 'input' }],
-  outputs: [{ id: 'output', label: 'output' }],
+  headerColor: 'var(--node-transform-header)',
+  icon: RefreshCw,
+  inputs: [{ id: 'input', label: 'Input' }],
+  outputs: [{ id: 'output', label: 'Output' }],
 };
 
 export const TransformNode = ({ id, data }) => {
@@ -111,11 +120,10 @@ export const TransformNode = ({ id, data }) => {
       </NodeField>
       {operation === 'custom' && (
         <NodeField label="Custom expression">
-          <NodeTextarea
+          <AutoResizeTextarea
             value={customCode}
             onChange={(e) => setCustomCode(e.target.value)}
             placeholder="(input) => input.trim()"
-            style={{ minHeight: 'var(--space-12)', fontFamily: 'var(--font-body)' }}
           />
         </NodeField>
       )}
@@ -126,23 +134,27 @@ export const TransformNode = ({ id, data }) => {
 // ─── 4. Note / Comment Node ───────────────────────────────────────────────────
 const noteConfig = {
   nodeType: 'Note',
-  headerColor: '#eab308',
-  icon: '✎',
+  headerColor: 'var(--node-note-header)',
+  icon: StickyNote,
   inputs: [],
   outputs: [],
-  minWidth: 180,
+  minWidth: 200,
 };
 
 export const NoteNode = ({ id, data }) => {
-  const [text, setText] = useState(data?.text || 'Add a note...');
+  const [text, setText] = useState(data?.text || '');
 
   return (
     <BaseNode id={id} data={data} config={noteConfig}>
-      <NodeTextarea
+      <AutoResizeTextarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Annotate your pipeline..."
-        style={{ minHeight: 'var(--space-13)', color: '#facc15', borderColor: '#eab30844', background: '#eab30808' }}
+        placeholder="Add a note to your pipeline..."
+        style={{
+          color: 'var(--node-note-header)',
+          background: 'var(--node-note-bg)',
+          borderColor: 'var(--node-note)',
+        }}
       />
     </BaseNode>
   );
@@ -151,15 +163,15 @@ export const NoteNode = ({ id, data }) => {
 // ─── 5. Vector Search Node ────────────────────────────────────────────────────
 const vectorConfig = {
   nodeType: 'Vector Search',
-  headerColor: '#a855f7',
-  icon: '◈',
+  headerColor: 'var(--node-vector-header)',
+  icon: Database,
   inputs: [
-    { id: 'query', label: 'query' },
-    { id: 'index', label: 'index' },
+    { id: 'query', label: 'Query' },
+    { id: 'index', label: 'Index' },
   ],
   outputs: [
-    { id: 'results', label: 'results' },
-    { id: 'scores', label: 'scores' },
+    { id: 'results', label: 'Results' },
+    { id: 'scores', label: 'Scores' },
   ],
 };
 
@@ -167,10 +179,19 @@ export const VectorSearchNode = ({ id, data }) => {
   const [topK, setTopK] = useState(data?.topK || '5');
   const [metric, setMetric] = useState(data?.metric || 'cosine');
   const [threshold, setThreshold] = useState(data?.threshold || '0.7');
+  const [indexName, setIndexName] = useState(data?.indexName || '');
 
   return (
     <BaseNode id={id} data={data} config={vectorConfig}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
+      <NodeField label="Index name">
+        <NodeInput
+          type="text"
+          value={indexName}
+          onChange={(e) => setIndexName(e.target.value)}
+          placeholder="my-vector-index"
+        />
+      </NodeField>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         <NodeField label="Top K">
           <NodeInput
             type="number"

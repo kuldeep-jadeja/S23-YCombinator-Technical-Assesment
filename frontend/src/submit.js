@@ -1,5 +1,6 @@
 // submit.js — Claude-styled pipeline submission (light mode)
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export const SubmitButton = ({ nodes = [], edges = [] }) => {
   const [loading, setLoading] = useState(false);
@@ -41,7 +42,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
           onMouseLeave={e => !loading && (e.currentTarget.style.background = 'var(--accent-primary)')}
         >
           {loading ? (
-            <><span style={spinnerStyle}>⟳</span> Analyzing…</>
+            <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Analyzing…</>
           ) : (
             'Validate Pipeline'
           )}
@@ -145,7 +146,7 @@ const btnStyle = {
   color: '#ffffff',
   border: 'none',
   borderRadius: 'var(--radius-md)',
-  padding: '12px 24px',
+  padding: '10px 20px',
   fontSize: 14,
   fontWeight: 500,
   fontFamily: 'var(--font-body)',
@@ -155,18 +156,13 @@ const btnStyle = {
   alignItems: 'center',
   gap: 8,
   transition: 'background var(--transition-fast), transform var(--transition-fast)',
-  boxShadow: 'none',
+  boxShadow: 'var(--shadow-sm)',
 };
 
 const btnDisabledStyle = {
   opacity: 0.6,
   cursor: 'not-allowed',
   transform: 'none',
-};
-
-const spinnerStyle = {
-  display: 'inline-block',
-  animation: 'spin 1s linear infinite',
 };
 
 const overlayStyle = {
