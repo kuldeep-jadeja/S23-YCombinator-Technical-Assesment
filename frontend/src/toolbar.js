@@ -1,8 +1,10 @@
-// toolbar.js — VectorShift-style top chrome with two-row layout
+// toolbar.js — Top navigation bar with node palette
+// Contains the search box and draggable node cards organized by category
 import { useState } from 'react';
 import { Search, ArrowRight, Sparkles, ArrowLeft, Type, ArrowLeftRight, GitBranch, RefreshCw, StickyNote, Database, ChevronDown, GripVertical } from 'lucide-react';
 import { DraggableNode } from './draggableNode';
 
+// Node definitions grouped by category
 const NODE_GROUPS = [
   {
     label: 'Start',
@@ -51,6 +53,7 @@ export const PipelineToolbar = () => {
   const [activeCategory, setActiveCategory] = useState('Start');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Filter nodes based on search query
   const filteredGroups = NODE_GROUPS.map(group => ({
     ...group,
     nodes: group.nodes.filter(node =>
@@ -60,9 +63,9 @@ export const PipelineToolbar = () => {
 
   return (
     <div className="toolbar">
-      {/* Row 1: Search box and node palette */}
+      {/* Search box and node palette */}
       <div className="toolbar-row palette-row">
-        {/* Search box */}
+        {/* Search input */}
         <div className="toolbar-search">
           <Search size={14} color="var(--muted)" />
           <input
@@ -74,7 +77,7 @@ export const PipelineToolbar = () => {
           <ChevronDown size={12} color="var(--muted)" />
         </div>
 
-        {/* Node groups palette */}
+        {/* Scrollable list of node groups */}
         <div className="palette-scroll">
           {filteredGroups.map(group => (
             <div key={group.label} className="palette-group">

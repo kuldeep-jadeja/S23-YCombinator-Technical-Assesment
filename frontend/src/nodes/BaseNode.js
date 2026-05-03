@@ -1,24 +1,23 @@
-// BaseNode.js — VectorShift-style node card with pale blue headers
+// BaseNode.js — Shared shell for all node types in the pipeline editor
+// This component handles the visual structure of every node: header, ID bar,
+// form fields, and connection handles. Node-specific content is passed as children.
 import { Handle, Position } from 'reactflow';
 import { isValidElement, useRef, useEffect } from 'react';
-import { Maximize2, Settings, X } from 'lucide-react';
 
-/**
- * BaseNode renders any node from a declarative config object.
- * Uses VectorShift-inspired light mode design with pale blue headers.
- *
- * Config shape:
- * {
- *   nodeType: string,           // display label in header
- *   headerColor: string,        // accent color for solid header
- *   icon: ReactComponent,       // Lucide icon component shown in header
- *   minWidth: number,           // minimum width in px (default 240)
- *   inputs: [{ id, label }],    // left-side target handles
- *   outputs: [{ id, label }],   // right-side source handles
- *   description: string,        // optional description text
- *   showIdBar: boolean,         // show internal id bar (default true)
- * }
- */
+// BaseNode renders any node from a declarative config object.
+// Uses VectorShift-inspired light mode design with pale blue headers.
+//
+// Config shape:
+// {
+//   nodeType: string,           // display label in header
+//   headerColor: string,        // accent color for solid header
+//   icon: ReactComponent,       // Lucide icon component shown in header
+//   minWidth: number,           // minimum width in px (default 240)
+//   inputs: [{ id, label }],    // left-side target handles
+//   outputs: [{ id, label }],   // right-side source handles
+//   description: string,        // optional description text
+//   showIdBar: boolean,         // show internal id bar (default true)
+// }
 export const BaseNode = ({ id, data, config, children, style: extraStyle = {} }) => {
   const {
     nodeType = 'Node',
@@ -60,7 +59,7 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
         </div>
       ))}
 
-      {/* Header - Pale blue background with colored icon */}
+      {/* Header — pale blue bar with the node icon and name */}
       <div className="node-header">
         <div className="node-icon" style={{ background: headerColor }}>
           {IconComponent && (
@@ -113,7 +112,7 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
   );
 };
 
-// ─── Shared field renderer ───────────────────────────────────────────────────
+// Helper components for building node forms
 export const NodeField = ({ label, children, badge }) => (
   <div className="node-field">
     <label className="field-label">
@@ -130,17 +129,17 @@ export const NodeSelect = ({ children, ...props }) => (
 );
 export const NodeTextarea = (props) => <textarea {...props} />;
 
-// ─── Variable pill for showing linked variables ─────────────────────────────
+// Display a variable reference as a pill (e.g., {{input.text}})
 export const VariablePill = ({ text }) => (
   <span className="variable-pill">{text}</span>
 );
 
-// ─── Suggestion box ─────────────────────────────────────────────────────────
+// Show a helpful suggestion to the user
 export const SuggestionBox = ({ children }) => (
   <div className="suggestion-box">{children}</div>
 );
 
-// ─── Auto-resizing Textarea ─────────────────────────────────────────────────
+// A textarea that automatically resizes to fit its content
 export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
   const textareaRef = useRef(null);
 
@@ -163,7 +162,7 @@ export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
   );
 };
 
-// ─── Handle distribution helper ──────────────────────────────────────────────
+// Distribute handles evenly from 20% to 80% of the node height
 function distributeHandles(count) {
   if (count === 0) return [];
   if (count === 1) return [50];
@@ -173,7 +172,7 @@ function distributeHandles(count) {
   return Array.from({ length: count }, (_, i) => Math.round(start + step * (i + 1)));
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+// Styles used by BaseNode
 const handleContainerStyle = {
   position: 'absolute',
   left: 0,
@@ -206,7 +205,7 @@ const descriptionStyle = {
   lineHeight: 1.5,
 };
 
-// Export shared styles for use in custom nodes
+// Exported for use in custom nodes
 export const fieldWrapStyle = {
   display: 'flex',
   flexDirection: 'column',

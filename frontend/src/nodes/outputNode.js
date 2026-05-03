@@ -1,8 +1,9 @@
-// outputNode.js
+// outputNode.js — Endpoint node that collects data from the pipeline
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { BaseNode, NodeField, NodeInput, NodeSelect } from './BaseNode';
 
+// Configuration for the Output node
 const config = {
   nodeType: 'Output',
   headerColor: 'var(--node-output-header)',

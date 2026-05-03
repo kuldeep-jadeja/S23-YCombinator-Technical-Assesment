@@ -1,3 +1,5 @@
+# main.py — FastAPI backend for pipeline validation
+# Accepts node/edge data and checks if the pipeline forms a valid DAG
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -21,11 +23,13 @@ app.add_middleware(
 
 
 class Pipeline(BaseModel):
+    """Nodes and edges that make up a pipeline"""
     nodes: list[dict[str, Any]]
     edges: list[dict[str, Any]]
 
 
 class PipelineResponse(BaseModel):
+    """Response with pipeline statistics"""
     num_nodes: int
     num_edges: int
     is_dag: bool
@@ -39,6 +43,10 @@ def read_root():
 
 @app.post("/pipelines/parse", response_model=PipelineResponse)
 def parse_pipeline(pipeline: Pipeline):
+    """
+    Validate a pipeline and return statistics.
+    Counts nodes and edges, then checks if the graph is acyclic.
+    """
     nodes = pipeline.nodes
     edges = pipeline.edges
 
@@ -54,7 +62,7 @@ def parse_pipeline(pipeline: Pipeline):
             warning="Empty pipeline — add nodes to build your workflow"
         )
 
-    # Check if DAG
+    # Check if this forms a valid DAG (no cycles)
     dag = is_dag(nodes, edges)
 
     return PipelineResponse(
@@ -67,8 +75,8 @@ def parse_pipeline(pipeline: Pipeline):
 
 def is_dag(nodes: list[dict], edges: list[dict]) -> bool:
     """
-    Returns True if the graph formed by nodes+edges is a Directed Acyclic Graph.
-    Uses Kahn's algorithm (topological sort via in-degree counting).
+    Check if the graph is a Directed Acyclic Graph using Kahn's algorithm.
+    Returns True if the graph has no cycles, False otherwise.
     """
     if not nodes:
         return True  # Empty graph is technically a DAG
@@ -87,7 +95,7 @@ def is_dag(nodes: list[dict], edges: list[dict]) -> bool:
             adj[src].append(tgt)
             in_degree[tgt] += 1
 
-    # Kahn's BFS
+    # Kahn's BFS — start with nodes that have no incoming edges
     queue = [nid for nid, deg in in_degree.items() if deg == 0]
     visited = 0
 

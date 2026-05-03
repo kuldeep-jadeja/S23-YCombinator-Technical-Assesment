@@ -1,4 +1,5 @@
-// ui.js — VectorShift-styled ReactFlow pipeline canvas
+// ui.js — Main canvas component using React Flow
+// Sets up the node palette, edge styling, and interactive controls
 import { useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap, useReactFlow, ReactFlowProvider, applyNodeChanges, applyEdgeChanges } from 'reactflow';
 
@@ -10,6 +11,7 @@ import 'reactflow/dist/style.css';
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
 
+// Map node types to their React components
 const nodeTypes = {
   customInput: InputNode,
   llm: LLMNode,
@@ -22,7 +24,7 @@ const nodeTypes = {
   vectorSearch: VectorSearchNode,
 };
 
-// Node color map for MiniMap - uses CSS tokens
+// Colors for each node type (used by the minimap)
 const nodeColorMap = {
   customInput: 'var(--node-input)',
   llm: 'var(--node-llm)',
@@ -46,15 +48,19 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
   const activeSetNodes = setNodes;
   const activeSetEdges = setEdges;
 
+  // Handle node position changes
   const onNodesChange = useCallback(
     (changes) => activeSetNodes((nds) => applyNodeChanges(changes, nds)),
     [activeSetNodes]
   );
+
+  // Handle edge changes
   const onEdgesChange = useCallback(
     (changes) => activeSetEdges((eds) => applyEdgeChanges(changes, eds)),
     [activeSetEdges]
   );
 
+  // Handle new connections with purple dashed styling
   const onConnect = useCallback(
     (connection) =>
       activeSetEdges((eds) =>
@@ -69,6 +75,7 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
     [activeSetEdges]
   );
 
+  // Handle dropping a node from the palette onto the canvas
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -119,7 +126,7 @@ const Flow = ({ nodes, setNodes, edges, setEdges }) => {
           animated: true,
         }}
       >
-        {/* Dot grid pattern - VectorShift style */}
+        {/* Dotted background pattern */}
         <Background color="#dbe3f0" gap={gridSize} variant="dots" size={1.05} />
         <Controls />
         <MiniMap

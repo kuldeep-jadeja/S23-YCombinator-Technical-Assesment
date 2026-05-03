@@ -1,9 +1,9 @@
-// customNodes.js — 5 new nodes built with BaseNode abstraction
+// customNodes.js — Five additional nodes built using the BaseNode abstraction
 import { useState } from 'react';
 import { ArrowLeftRight, GitBranch, RefreshCw, StickyNote, Database } from 'lucide-react';
 import { BaseNode, NodeField, NodeInput, NodeSelect, AutoResizeTextarea } from './BaseNode';
 
-// ─── 1. API Request Node ─────────────────────────────────────────────────────
+// API Request Node — Makes HTTP calls with configurable method, URL, and headers
 const apiConfig = {
   nodeType: 'API Request',
   headerColor: 'var(--node-api-header)',
@@ -53,7 +53,7 @@ export const APIRequestNode = ({ id, data }) => {
   );
 };
 
-// ─── 2. Conditional / Router Node ────────────────────────────────────────────
+// Condition Node — Splits the pipeline based on a comparison
 const conditionalConfig = {
   nodeType: 'Condition',
   headerColor: 'var(--node-conditional-header)',
@@ -93,7 +93,7 @@ export const ConditionalNode = ({ id, data }) => {
   );
 };
 
-// ─── 3. Data Transform Node ───────────────────────────────────────────────────
+// Transform Node — Apply string/data transformations
 const transformConfig = {
   nodeType: 'Transform',
   headerColor: 'var(--node-transform-header)',
@@ -131,7 +131,7 @@ export const TransformNode = ({ id, data }) => {
   );
 };
 
-// ─── 4. Note / Comment Node ───────────────────────────────────────────────────
+// Note Node — Add comments and documentation to your pipeline
 const noteConfig = {
   nodeType: 'Note',
   headerColor: 'var(--node-note-header)',
@@ -160,7 +160,7 @@ export const NoteNode = ({ id, data }) => {
   );
 };
 
-// ─── 5. Vector Search Node ────────────────────────────────────────────────────
+// Vector Search Node — Find similar items in a vector database
 const vectorConfig = {
   nodeType: 'Vector Search',
   headerColor: 'var(--node-vector-header)',

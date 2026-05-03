@@ -1,4 +1,5 @@
-// submit.js — Pipeline validation with backend integration
+// submit.js — Submit button that validates the pipeline via backend API
+// Sends nodes and edges to the backend and displays results in a modal
 import { useState } from 'react';
 import { Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
@@ -7,6 +8,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
+  // Send pipeline to backend for validation
   const handleSubmit = async () => {
     setLoading(true);
     setResult(null);
@@ -29,6 +31,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
 
   return (
     <>
+      {/* Bottom bar with stats and submit button */}
       <div style={barStyle}>
         <div style={statsStyle}>
           <Chip label="Nodes" value={nodes.length} color="var(--node-transform)" />
@@ -57,11 +60,12 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
         </button>
       </div>
 
-      {/* Result Modal */}
+      {/* Result or error modal */}
       {(result || error) && (
         <div style={overlayStyle} onClick={() => { setResult(null); setError(null); }}>
           <div style={modalStyle} onClick={e => e.stopPropagation()}>
             {error ? (
+              // Connection error state
               <>
                 <div style={errorHeaderStyle}>
                   <XCircle size={24} color="var(--node-api)" />
@@ -74,6 +78,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
                 <code style={codeStyle}>cd backend && uvicorn main:app --reload</code>
               </>
             ) : (
+              // Success state — show pipeline stats
               <>
                 <div style={{
                   ...modalHeaderStyle,
@@ -130,7 +135,7 @@ export const SubmitButton = ({ nodes = [], edges = [] }) => {
   );
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// Small chip showing a label and value (e.g., "NODES 2")
 const Chip = ({ label, value, color }) => (
   <div style={{
     display: 'flex',
@@ -145,6 +150,7 @@ const Chip = ({ label, value, color }) => (
   </div>
 );
 
+// Metric display in the modal (large number with label below)
 const Metric = ({ label, value, color }) => (
   <div style={{
     flex: 1,
@@ -159,7 +165,7 @@ const Metric = ({ label, value, color }) => (
   </div>
 );
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// Styles
 const barStyle = {
   display: 'flex',
   alignItems: 'center',

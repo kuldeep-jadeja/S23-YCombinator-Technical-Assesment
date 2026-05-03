@@ -1,2 +1,2 @@
-/* Global styles are now defined in tokens.css */
-/* This file is kept for React app entry point compatibility */
+/* index.css — Entry point styles */
+@import url('./tokens.css');

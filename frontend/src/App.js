@@ -1,4 +1,5 @@
-// App.js
+// App.js — Main app component
+// Renders the toolbar, canvas, and submit button
 import { useState } from 'react';
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';

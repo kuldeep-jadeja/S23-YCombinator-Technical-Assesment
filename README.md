@@ -1,279 +1,262 @@
-# 🔗 Pipeline Orchestrator
+## Quick Start
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react" />
-  <img src="https://img.shields.io/badge/FastAPI-0.104-009688?style=for-the-badge&logo=fastapi" />
-  <img src="https://img.shields.io/badge/ReactFlow-11.11-FF6B6B?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Node-18+-339933?style=for-the-badge&logo=node.js" />
-  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python" />
-</p>
-
-> A visual pipeline orchestration tool with drag-and-drop node creation, real-time DAG validation, and a clean dark-themed interface.
-
----
-
-## ✨ Features
-
-- **🎨 Visual Node Editor** — Drag-and-drop interface powered by ReactFlow
-- **🔗 9 Node Types** — Input, LLM, Output, Text, API Request, Conditional, Transform, Note, Vector Search
-- **⚡ Real-time DAG Validation** — Instantly validates pipeline structure via Kahn's algorithm
-- **🌙 Dark Theme UI** — Modern, high-contrast design with syntax-highlighted code elements
-- **📊 Live Stats** — Node/edge count displayed in real-time
-- **🔄 Smooth Animations** — Animated edge connections between nodes
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Frontend (React)                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │  Toolbar    │  │  PipelineUI │  │  SubmitButton           │  │
-│  │  (Drag src) │  │  (ReactFlow)│  │  (Validate Pipeline)    │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-│                            │                                    │
-│                            │ POST /pipelines/parse              │
-└────────────────────────────┼────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                         Backend (FastAPI)                       │
-│  ┌─────────────────────┐  ┌─────────────────────────────────┐   │
-│  │  GET /              │  │  POST /pipelines/parse          │   │
-│  │  Health check       │  │  DAG validation (Kahn's algo)   │   │
-│  └─────────────────────┘  └─────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📦 Node Types
-
-| Node | Icon | Color | Description |
-|------|------|-------|-------------|
-| **Input** | → | `#10b981` | Defines pipeline input sources (Text, File, Image, Number) |
-| **LLM** | ✦ | `#8b5cf6` | Connects to large language models (GPT-4o, Claude, Gemini) |
-| **Output** | ← | `#f59e0b` | Defines pipeline output sinks |
-| **Text** | T | `#06b6d4` | Static text with `{{variable}}` interpolation |
-| **API Request** | ⇄ | `#f43f5e` | HTTP requests (GET, POST, PUT, PATCH, DELETE) |
-| **Conditional** | ⟁ | `#ec4899` | Branch logic (equals, contains, gt, lt, is_empty) |
-| **Transform** | ⟳ | `#14b8a6` | Data transformation (uppercase, JSON parse/stringify) |
-| **Note** | ✎ | `#eab308` | Annotations and documentation |
-| **Vector Search** | ◈ | `#a855f7` | Semantic search configuration (cosine, euclidean, dot) |
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** 18+
-- **Python** 3.11+
-- **pip** (Python package manager)
-
-### 1. Clone & Setup
+### Frontend
 
 ```bash
-# Frontend
 cd frontend
 npm install
-
-# Backend (in a virtual environment recommended)
-cd ../backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install fastapi uvicorn
-```
-
-### 2. Run the Application
-
-**Terminal 1 — Backend:**
-```bash
-cd backend
-uvicorn main:app --reload --port 8000
-```
-
-**Terminal 2 — Frontend:**
-```bash
-cd frontend
 npm start
 ```
 
-### 3. Open in Browser
+Opens at `http://localhost:3000`.
 
+### Backend
+
+```bash
+cd backend
+pip install fastapi uvicorn pydantic
+uvicorn main:app --reload
 ```
-http://localhost:3000
+
+Runs at `http://localhost:8000`.
+
+---
+
+This project went through four phases:
+
+1. **Node Abstraction** — Created a reusable BaseNode component so new node types can be added quickly
+2. **Styling** — Applied a clean VectorShift-inspired design with light theme
+3. **Text Node Logic** — Added auto-resizing text area and dynamic handles for `{{variables}}`
+4. **Backend Integration** — Connected the frontend to a validation API that checks for cycles
+
+---
+
+## Phase 1: Node Abstraction
+
+### The Problem
+
+Each node type (Input, Output, LLM, Text) was its own component with duplicated code. Every node had to define its own header rendering, ID bar, form fields, and connection handles. Adding a new node meant copying an existing file and rewriting most of the code.
+
+### The Solution I Adopted
+
+Created a `BaseNode` component that handles all the shared structure. New nodes just define a configuration and their form fields:
+
+```jsx
+// Define the config once
+const myConfig = {
+  nodeType: 'My Node',
+  headerColor: 'var(--node-llm-header)',
+  icon: Sparkles,
+  inputs: [{ id: 'input', label: 'Input' }],
+  outputs: [{ id: 'output', label: 'Output' }],
+};
+
+// Use BaseNode and add your fields
+export const MyNode = ({ id, data }) => {
+  return (
+    <BaseNode id={id} data={data} config={myConfig}>
+      <NodeField label="Field 1">
+        <NodeInput value={...} />
+      </NodeField>
+    </BaseNode>
+  );
+};
+```
+
+### Config Options
+
+| Property      | Type             | Description                    |
+| ------------- | ---------------- | ------------------------------ |
+| `nodeType`    | string           | Label shown in the header      |
+| `headerColor` | CSS variable     | Background color for the icon  |
+| `icon`        | Lucide component | Icon displayed in header       |
+| `inputs`      | array            | Connection points on the left  |
+| `outputs`     | array            | Connection points on the right |
+| `minWidth`    | number           | Minimum node width in pixels   |
+
+### Nodes Available
+
+**Original 4:**
+
+- Input — Feeds data into the pipeline
+- Output — Collects data from the pipeline
+- LLM — Connects to a language model (GPT-4o, Claude, etc.)
+- Text — Text processing with variable support
+
+**Additional 5:**
+
+- API Request — Make HTTP calls with configurable method/URL/headers
+- Condition — Branch the pipeline based on a comparison
+- Transform — Apply string transformations (uppercase, trim, JSON parse, etc.)
+- Note — Add comments and documentation
+- Vector Search — Find similar items in a vector database
+
+---
+
+## Phase 2: Styling
+
+### Design Choices
+
+The UI was styled to match VectorShift's clean aesthetic I made an agent to scape the VectorShift website and extract design tokens. The main features are:
+
+- **Light canvas** — Subtle blue-gray background with dotted grid pattern
+- **White node cards** — Clean bodies with pale blue headers
+- **Purple accents** — Primary color for edges, buttons, and active states
+- **Compact toolbar** — Search box and draggable node cards at the top
+
+### Key Visual Elements
+
+**Palette Cards (80x80px):**
+
+- Square cards with icon and label
+- Icon shown in the node's accent color
+- Hover lifts the card with blue border
+
+**Node Cards:**
+
+- White body with pale blue header
+- Colored icon in the header (green=Input, purple=LLM, yellow=Output, etc.)
+- Internal ID bar showing short name like `input_1`
+- Form fields with consistent padding and borders
+
+**Edges:**
+
+- Purple dashed lines (7px dash, 7px gap)
+- Subtle animation showing data flow direction
+- Circular handles with purple borders
+
+### CSS Structure
+
+Design tokens are in `frontend/src/tokens.css`:
+
+```css
+:root {
+    /* Backgrounds */
+    --bg-primary: #ffffff;
+    --bg-canvas: #fbfdff;
+    --bg-soft: #f6f7fb;
+
+    /* Text */
+    --ink: #121826;
+    --muted: #667085;
+
+    /* Accents */
+    --blue: #635bff;
+    --blue-soft: #eef1ff;
+
+    /* Node colors */
+    --node-input: #10b981;
+    --node-llm: #8b5cf6;
+    --node-output: #f59e0b;
+    /* ... and more */
+}
 ```
 
 ---
 
-## 🎯 Usage Guide
+## Phase 3: Text Node Logic
 
-### Creating a Pipeline
+### Auto-resizing Text Area
 
-1. **Drag nodes** from the toolbar at the top
-2. **Connect nodes** by dragging from output handle to input handle
-3. **Configure nodes** by clicking and editing fields
-4. **Validate** by clicking the "⬡ Validate Pipeline" button
+The text area grows as you type more content. Uses a `useEffect` that adjusts height after every keystroke:
 
-### Node Configuration
-
-#### Text Node — Variable Interpolation
+```jsx
+useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = `${Math.max(textarea.scrollHeight, 56)}px`;
+    }
+}, [value]);
 ```
-{{user_input}} — creates dynamic input handle
+
+### Dynamic Handles for Variables
+
+Type `{{variable_name}}` in the text field and the node automatically creates an input handle on the left side. This lets you wire up other nodes directly into your text.
+
+Example: If you have an Input node named `user_name`, type:
+
 ```
-Variables are automatically extracted and displayed as connection handles.
+Hello, {{user_name}}! How can I help you today?
+```
 
-#### Conditional Node
-Supports operators: `equals`, `not_equals`, `contains`, `gt`, `lt`, `is_empty`
+A handle labeled "user_name" appears on the left side of the Text node, ready to be connected.
 
-#### Transform Node
-Operations: `uppercase`, `lowercase`, `trim`, `json_parse`, `json_stringify`, `custom (JS)`
+The regex `/\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g` extracts variable names from the text.
 
 ---
 
-## 🔌 API Reference
+## Phase 4: Backend Integration
 
-### `GET /`
-Health check endpoint.
+### The Endpoint
 
-**Response:**
+**POST `/pipelines/parse`**
+
+Send your nodes and edges, get back statistics and validation status:
+
 ```json
-{
-  "Ping": "Pong"
-}
-```
+// Request
+{ "nodes": [...], "edges": [...] }
 
-### `POST /pipelines/parse`
-Validates the pipeline graph structure.
-
-**Request Body:**
-```json
-{
-  "nodes": [
-    { "id": "customInput-1", "type": "customInput", "data": {...} }
-  ],
-  "edges": [
-    { "source": "customInput-1", "target": "llm-1" }
-  ]
-}
-```
-
-**Response:**
-```json
+// Response
 {
   "num_nodes": 3,
   "num_edges": 2,
-  "is_dag": true
+  "is_dag": true,
+  "warning": null
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `num_nodes` | int | Total number of nodes in the pipeline |
-| `num_edges` | int | Total number of connections |
-| `is_dag` | bool | `true` if the graph is a Directed Acyclic Graph |
+### DAG Validation (Kahn's Algorithm)
+
+The backend checks for cycles using Kahn's algorithm:
+
+1. Build a graph from nodes and edges
+2. Find all nodes with no incoming edges
+3. Remove them and reduce in-degrees of their neighbors
+4. Repeat until no nodes remain
+5. If all nodes get removed, there are no cycles → valid DAG
+6. If some nodes remain, there's a cycle → invalid
+
+### Frontend Flow
+
+1. Click "Validate Pipeline"
+2. Frontend sends nodes and edges to backend
+3. Loading spinner appears
+4. Modal shows results:
+    - Node and edge counts
+    - Whether it's a valid DAG
+    - Success or warning icon
+    - Helpful message
+
+If the backend isn't running, shows a connection error with instructions.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-frontend_technical_assessment/
-├── frontend/
-│   ├── public/
-│   │   └── manifest.json
-│   ├── src/
-│   │   ├── nodes/
-│   │   │   ├── BaseNode.js      # Core node component
-│   │   │   ├── customNodes.js   # 5 custom nodes (API, Conditional, etc.)
-│   │   │   ├── inputNode.js     # Input node
-│   │   │   ├── llmNode.js       # LLM node
-│   │   │   ├── outputNode.js    # Output node
-│   │   │   └── textNode.js      # Text node with variable interpolation
-│   │   ├── App.js               # Main app component
-│   │   ├── draggableNode.js     # Toolbar drag source
-│   │   ├── index.js             # React entry point
-│   │   ├── store.js             # Zustand store (ID generation)
-│   │   ├── submit.js            # Validation button & modal
-│   │   ├── toolbar.js           # Node palette toolbar
-│   │   └── ui.js                # ReactFlow canvas
-│   ├── package.json
-│   └── README.md
-├── backend/
-│   ├── main.py                  # FastAPI app with DAG validation
-│   └── requirements.txt         # (optional) Python dependencies
-├── SPEC.md
-└── README.md
-```
+frontend/
+├── src/
+│   ├── nodes/
+│   │   ├── BaseNode.js      # Shared node shell
+│   │   ├── inputNode.js     # Input node
+│   │   ├── outputNode.js    # Output node
+│   │   ├── llmNode.js       # LLM node
+│   │   ├── textNode.js      # Text with variable support
+│   │   ├── customNodes.js   # API, Condition, Transform, Note, Vector
+│   │   └── index.js         # Exports all nodes
+│   ├── toolbar.js           # Top navigation
+│   ├── draggableNode.js     # Palette cards
+│   ├── ui.js                # React Flow canvas
+│   ├── submit.js            # Validation button + modal
+│   ├── store.js             # Global state
+│   ├── tokens.css           # Design tokens
+│   ├── App.js               # Main component
+│   └── index.js             # Entry point
 
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Version |
-|-------|------------|---------|
-| **Frontend Framework** | React | 18.2 |
-| **Flow Editor** | ReactFlow | 11.11 |
-| **State Management** | Zustand | 5.0 |
-| **Build Tool** | Create React App | 5.0 |
-| **Backend Framework** | FastAPI | 0.104+ |
-| **Python Runtime** | Python | 3.11+ |
-| **ASGI Server** | Uvicorn | Latest |
-
----
-
-## 🎨 Screenshots
-
-> Visual preview of the pipeline editor with connected nodes
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  Pipeline Orchestrator                              [Toolbar]     │
-├──────────────────────────────────────────────────────────────────┤
-│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐         │
-│  │ Input  │ │  LLM   │ │  Text  │ │  API   │ │Vector  │         │
-│  │  →     │ │  ✦     │ │  T     │ │  ⇄     │ │  ◈     │         │
-│  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘         │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│      ┌─────────────┐                    ┌─────────────┐         │
-│      │   Input     │                    │    LLM      │         │
-│      │   node_1    │ ──────────────────▶│  gpt-4o     │         │
-│      └─────────────┘                    └─────────────┘         │
-│                                                │                │
-│                                                ▼                │
-│                                        ┌─────────────┐          │
-│                                        │   Output    │          │
-│                                        │  output_1   │          │
-│                                        └─────────────┘          │
-│                                                                  │
-├──────────────────────────────────────────────────────────────────┤
-│  Nodes: 3  │  Edges: 2  │         ⬡ Validate Pipeline            │
-└──────────────────────────────────────────────────────────────────┘
+backend/
+└── main.py                  # FastAPI with DAG validation
 ```
 
 ---
-
-## 🔍 Validation Logic
-
-The backend uses **Kahn's Algorithm** for topological sorting:
-
-1. Calculate in-degree for each node
-2. Queue nodes with in-degree = 0
-3. Process queue, decrementing neighbor in-degrees
-4. If all nodes visited → **DAG is valid**
-5. If cycles remain → **Not a DAG**
-
----
-
-## 📝 License
-
-MIT License — feel free to use and modify.
-
----
-
-<p align="center">
-  Built with ❤️ using React + FastAPI
-</p>

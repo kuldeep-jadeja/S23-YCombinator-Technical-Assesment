@@ -1,8 +1,9 @@
-// llmNode.js
+// llmNode.js — Large language model node for AI completions
 import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { BaseNode, NodeField, NodeSelect, AutoResizeTextarea } from './BaseNode';
 
+// Configuration for the LLM node
 const config = {
   nodeType: 'LLM',
   headerColor: 'var(--node-llm-header)',

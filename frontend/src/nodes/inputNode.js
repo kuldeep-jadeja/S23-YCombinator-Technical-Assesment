@@ -1,8 +1,9 @@
-// inputNode.js
+// inputNode.js — Starting point node that feeds data into the pipeline
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { BaseNode, NodeField, NodeInput, NodeSelect } from './BaseNode';
 
+// Configuration for the Input node
 const config = {
   nodeType: 'Input',
   headerColor: 'var(--node-input-header)',
@@ -12,6 +13,7 @@ const config = {
 };
 
 export const InputNode = ({ id, data }) => {
+  // Use a friendly name like "input_1" instead of the internal React Flow ID
   const [currName, setCurrName] = useState(data?.inputName || id.replace('customInput-', 'input_'));
   const [inputType, setInputType] = useState(data?.inputType || 'Text');
 

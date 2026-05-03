@@ -1,9 +1,10 @@
-// textNode.js — Dynamic resize + {{variable}} → Handle generation
+// textNode.js — Text input node that auto-resizes and creates handles for {{variables}}
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Type } from 'lucide-react';
 import { BaseNode, fieldLabelStyle, fieldWrapStyle } from './BaseNode';
 
+// Matches {{variable_name}} patterns in the text
 const VARIABLE_REGEX = /\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g;
 
 const baseConfig = {
@@ -14,7 +15,7 @@ const baseConfig = {
   outputs: [{ id: 'output', label: 'Output' }],
 };
 
-// Auto-resizing textarea with syntax highlighting
+// A textarea that grows as you type more content
 const DynamicTextarea = ({ value, onChange, placeholder }) => {
   const textareaRef = useRef(null);
 
@@ -43,12 +44,11 @@ export const TextNode = ({ id, data }) => {
   // Extract unique variable names from {{...}} syntax
   const variables = [...new Set([...currText.matchAll(VARIABLE_REGEX)].map(m => m[1]))];
 
-  // Dynamic node width based on content
-  const contentWidth = Math.max(currText.length * 7.5 + 100, 200);
+  // Calculate width based on longest line to fit the content
   const maxLineLength = Math.max(...currText.split('\n').map(l => l.length), 10);
   const dynamicWidth = Math.min(Math.max(maxLineLength * 9 + 100, 200), 600);
 
-  // Distribute variable handles with wider range (15%-90%)
+  // Position variable handles along the left side
   const varHandlePositions = distributeVariableHandles(variables.length);
 
   return (
@@ -58,7 +58,7 @@ export const TextNode = ({ id, data }) => {
       config={{ ...baseConfig, minWidth: dynamicWidth }}
       style={{ minWidth: dynamicWidth }}
     >
-      {/* Variable Handles - left side, positioned with transform */}
+      {/* Variable Handles — appear on the left for each {{variable}} in the text */}
       {variables.map((varName, i) => (
         <div key={varName} style={handleWrapperStyle}>
           <span style={{
@@ -85,7 +85,7 @@ export const TextNode = ({ id, data }) => {
         </div>
       ))}
 
-      {/* Text Content Field */}
+      {/* Main text input field */}
       <div style={fieldWrapStyle}>
         <label style={fieldLabelStyle}>Content</label>
         <DynamicTextarea
@@ -95,7 +95,7 @@ export const TextNode = ({ id, data }) => {
         />
       </div>
 
-      {/* Variable Chips - simplified display */}
+      {/* Show which variables are being used */}
       {variables.length > 0 && (
         <div style={chipsContainerStyle}>
           <span style={chipsLabelStyle}>Inputs:</span>
@@ -115,18 +115,17 @@ export const TextNode = ({ id, data }) => {
   );
 };
 
-// Handle distribution with wider range
+// Spread handles evenly from 15% to 90% of the node height
 function distributeVariableHandles(count) {
   if (count === 0) return [];
   if (count === 1) return [50];
-  // Wider range for better coverage: 15% to 90%
   const start = 15;
   const end = 90;
   const step = (end - start) / (count + 1);
   return Array.from({ length: count }, (_, i) => Math.round(start + step * (i + 1)));
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+// Shared styles
 const handleWrapperStyle = {
   position: 'absolute',
   left: 0,

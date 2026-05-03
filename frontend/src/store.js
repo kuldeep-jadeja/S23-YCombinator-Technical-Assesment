@@ -1,4 +1,5 @@
-// store.js
+// store.js — Global state for the pipeline editor
+// Uses Zustand to manage nodes, edges, and node ID generation
 import { create } from 'zustand';
 import {
   addEdge,
@@ -12,6 +13,7 @@ export const useStore = create((set, get) => ({
   edges: [],
   nodeIDs: {},
 
+  // Generate a unique ID for a new node of a given type
   getNodeID: (type) => {
     const newIDs = { ...get().nodeIDs };
     if (newIDs[type] === undefined) newIDs[type] = 0;
@@ -20,18 +22,22 @@ export const useStore = create((set, get) => ({
     return `${type}-${newIDs[type]}`;
   },
 
+  // Add a node to the canvas
   addNode: (node) => {
     set({ nodes: [...get().nodes, node] });
   },
 
+  // Handle node position/size changes from React Flow
   onNodesChange: (changes) => {
     set({ nodes: applyNodeChanges(changes, get().nodes) });
   },
 
+  // Handle edge changes from React Flow
   onEdgesChange: (changes) => {
     set({ edges: applyEdgeChanges(changes, get().edges) });
   },
 
+  // Handle new connections between nodes
   onConnect: (connection) => {
     set({
       edges: addEdge(
@@ -47,6 +53,7 @@ export const useStore = create((set, get) => ({
     });
   },
 
+  // Update a specific field on a node
   updateNodeField: (nodeId, fieldName, fieldValue) => {
     set({
       nodes: get().nodes.map((node) => {
