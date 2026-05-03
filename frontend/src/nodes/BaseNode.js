@@ -1,10 +1,11 @@
-// BaseNode.js — Claude-inspired light mode design with solid headers
+// BaseNode.js — VectorShift-style node card with pale blue headers
 import { Handle, Position } from 'reactflow';
 import { isValidElement, useRef, useEffect } from 'react';
+import { Maximize2, Settings, X } from 'lucide-react';
 
 /**
  * BaseNode renders any node from a declarative config object.
- * Uses Claude-inspired warm canvas design.
+ * Uses VectorShift-inspired light mode design with pale blue headers.
  *
  * Config shape:
  * {
@@ -14,6 +15,8 @@ import { isValidElement, useRef, useEffect } from 'react';
  *   minWidth: number,           // minimum width in px (default 240)
  *   inputs: [{ id, label }],    // left-side target handles
  *   outputs: [{ id, label }],   // right-side source handles
+ *   description: string,        // optional description text
+ *   showIdBar: boolean,         // show internal id bar (default true)
  * }
  */
 export const BaseNode = ({ id, data, config, children, style: extraStyle = {} }) => {
@@ -24,56 +27,67 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
     minWidth = 240,
     inputs = [],
     outputs = [],
+    description,
+    showIdBar = true,
+    internalName,
   } = config;
 
-  // Distribute handles evenly along the edge with better spacing
+  // Distribute handles evenly along the edge
   const inputPositions = distributeHandles(inputs.length);
   const outputPositions = distributeHandles(outputs.length);
 
+  // Derive short id for display (e.g., "input_0" from "customInput-1")
+  const displayId = internalName || id.replace('customInput-', 'input_').replace('customOutput-', 'output_').replace('llm-', 'llm_').replace('text-', 'text_');
+
   return (
-    <div style={{
-      ...nodeStyle,
-      minWidth,
-      ...extraStyle
-    }}>
+    <div className="node-card" style={{ minWidth, ...extraStyle }}>
       {/* Left-side target handles */}
       {inputs.map((handle, i) => (
         <div key={handle.id} style={handleContainerStyle}>
-          <span style={{ ...inputHandleLabelStyle, top: `${inputPositions[i]}%` }}>
-            {handle.label}
-          </span>
           <Handle
             type="target"
             position={Position.Left}
             id={`${id}-${handle.id}`}
+            className="vs-handle"
             style={{
               top: `${inputPositions[i]}%`,
               ...handleStyle,
-              background: headerColor,
-              border: '2px solid var(--bg-primary)',
+              background: 'var(--bg-primary)',
+              border: '2px solid var(--blue)',
               ...(handle.style || {})
             }}
           />
         </div>
       ))}
 
-      {/* Header - Solid color background */}
-      <div style={{
-        ...headerStyle,
-        background: headerColor,
-      }}>
-        {IconComponent && (
-          isValidElement(IconComponent) ? (
-            IconComponent
-          ) : (
-            <IconComponent size={16} color="#ffffff" strokeWidth={2} style={{ flexShrink: 0 }} />
-          )
-        )}
-        <span style={headerTextStyle}>{nodeType}</span>
+      {/* Header - Pale blue background with colored icon */}
+      <div className="node-header">
+        <div className="node-icon" style={{ background: headerColor }}>
+          {IconComponent && (
+            isValidElement(IconComponent) ? (
+              IconComponent
+            ) : (
+              <IconComponent size={14} color="#ffffff" strokeWidth={2} />
+            )
+          )}
+        </div>
+        <span className="node-title">{nodeType}</span>
       </div>
 
-      {/* Body — white background with content */}
-      <div style={bodyStyle}>
+      {/* Internal ID bar */}
+      {showIdBar && (
+        <div style={idBarContainerStyle}>
+          <span className="node-id-bar">{displayId}</span>
+        </div>
+      )}
+
+      {/* Description */}
+      {description && (
+        <div style={descriptionStyle}>{description}</div>
+      )}
+
+      {/* Body */}
+      <div className="node-body">
         {children}
       </div>
 
@@ -84,17 +98,15 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
             type="source"
             position={Position.Right}
             id={`${id}-${handle.id}`}
+            className="vs-handle"
             style={{
               top: `${outputPositions[i]}%`,
               ...handleStyle,
-              background: headerColor,
-              border: '2px solid var(--bg-primary)',
+              background: 'var(--bg-primary)',
+              border: '2px solid var(--blue)',
               ...(handle.style || {})
             }}
           />
-          <span style={{ ...outputHandleLabelStyle, top: `${outputPositions[i]}%` }}>
-            {handle.label}
-          </span>
         </div>
       ))}
     </div>
@@ -102,18 +114,31 @@ export const BaseNode = ({ id, data, config, children, style: extraStyle = {} })
 };
 
 // ─── Shared field renderer ───────────────────────────────────────────────────
-export const NodeField = ({ label, children }) => (
-  <div style={fieldWrapStyle}>
-    <label style={fieldLabelStyle}>{label}</label>
+export const NodeField = ({ label, children, badge }) => (
+  <div className="node-field">
+    <label className="field-label">
+      {label}
+      {badge && <span className="field-badge">{badge}</span>}
+    </label>
     {children}
   </div>
 );
 
-export const NodeInput = (props) => <input style={inputStyle} {...props} />;
+export const NodeInput = (props) => <input {...props} />;
 export const NodeSelect = ({ children, ...props }) => (
-  <select style={selectStyle} {...props}>{children}</select>
+  <select {...props}>{children}</select>
 );
-export const NodeTextarea = (props) => <textarea style={textareaStyle} {...props} />;
+export const NodeTextarea = (props) => <textarea {...props} />;
+
+// ─── Variable pill for showing linked variables ─────────────────────────────
+export const VariablePill = ({ text }) => (
+  <span className="variable-pill">{text}</span>
+);
+
+// ─── Suggestion box ─────────────────────────────────────────────────────────
+export const SuggestionBox = ({ children }) => (
+  <div className="suggestion-box">{children}</div>
+);
 
 // ─── Auto-resizing Textarea ─────────────────────────────────────────────────
 export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
@@ -132,7 +157,7 @@ export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
       ref={textareaRef}
       value={value}
       onChange={onChange}
-      style={autoResizeTextareaStyle}
+      style={{ width: '100%', resize: 'none', minHeight: 40 }}
       {...props}
     />
   );
@@ -142,7 +167,6 @@ export const AutoResizeTextarea = ({ value, onChange, ...props }) => {
 function distributeHandles(count) {
   if (count === 0) return [];
   if (count === 1) return [50];
-  // Better spacing: leave more room at edges
   const start = 20;
   const end = 80;
   const step = (end - start) / (count + 1);
@@ -150,43 +174,6 @@ function distributeHandles(count) {
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
-const nodeStyle = {
-  background: 'var(--bg-primary)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-lg)',
-  fontFamily: 'var(--font-body)',
-  position: 'relative',
-  overflow: 'visible',
-  minWidth: 240,
-  transition: 'box-shadow var(--transition-fast), transform var(--transition-fast)',
-  boxShadow: 'var(--shadow-md)',
-};
-
-const headerStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  padding: '10px 14px',
-  borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
-  position: 'relative',
-};
-
-const headerTextStyle = {
-  fontSize: 16,
-  fontFamily: 'var(--font-heading)',
-  fontWeight: 400,
-  letterSpacing: '0',
-  color: '#ffffff',
-};
-
-const bodyStyle = {
-  padding: 14,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 12,
-  background: 'var(--bg-primary)',
-};
-
 const handleContainerStyle = {
   position: 'absolute',
   left: 0,
@@ -203,43 +190,23 @@ const handleStyle = {
   transition: 'transform var(--transition-fast), box-shadow var(--transition-fast)',
 };
 
-const inputHandleLabelStyle = {
-  position: 'absolute',
-  left: 22,
-  transform: 'translateY(-50%)',
-  fontSize: 10,
-  color: 'var(--text-secondary)',
-  fontWeight: 500,
-  letterSpacing: '0.01em',
-  pointerEvents: 'none',
-  whiteSpace: 'nowrap',
-  background: 'var(--bg-primary)',
-  padding: '2px 6px',
-  borderRadius: 4,
-  boxShadow: 'var(--shadow-xs)',
-  zIndex: 1,
+const idBarContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  padding: '5px 14px',
+  background: '#eef1ff',
+  borderBottom: '1px solid #d8dbf3',
 };
 
-const outputHandleLabelStyle = {
-  position: 'absolute',
-  right: 22,
-  transform: 'translateY(-50%)',
-  fontSize: 10,
-  color: 'var(--text-secondary)',
-  fontWeight: 500,
-  letterSpacing: '0.01em',
-  pointerEvents: 'none',
-  whiteSpace: 'nowrap',
-  background: 'var(--bg-primary)',
-  padding: '2px 6px',
-  borderRadius: 4,
-  boxShadow: 'var(--shadow-xs)',
-  zIndex: 1,
-  textAlign: 'right',
+const descriptionStyle = {
+  padding: '10px 14px',
+  fontSize: 12,
+  color: 'var(--muted)',
+  borderBottom: '1px solid var(--border-light)',
+  lineHeight: 1.5,
 };
 
-export const handleLabelStyle = inputHandleLabelStyle;
-
+// Export shared styles for use in custom nodes
 export const fieldWrapStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -250,38 +217,6 @@ export const fieldLabelStyle = {
   fontSize: 12,
   fontWeight: 500,
   color: 'var(--text-secondary)',
-  letterSpacing: '1.5px',
-  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
   fontFamily: 'var(--font-body)',
-};
-
-const sharedInputStyle = {
-  background: 'var(--bg-secondary)',
-  border: '1px solid var(--border-light)',
-  borderRadius: 'var(--radius-sm)',
-  color: 'var(--text-primary)',
-  fontSize: 13,
-  padding: '8px 12px',
-  width: '100%',
-  boxSizing: 'border-box',
-  outline: 'none',
-  fontFamily: 'inherit',
-  transition: 'border-color var(--transition-fast), box-shadow var(--transition-fast)',
-};
-
-export const inputStyle = { ...sharedInputStyle };
-export const selectStyle = { ...sharedInputStyle, cursor: 'pointer' };
-export const textareaStyle = {
-  ...sharedInputStyle,
-  resize: 'none',
-  lineHeight: 1.5,
-  minHeight: 40,
-};
-
-const autoResizeTextareaStyle = {
-  ...sharedInputStyle,
-  resize: 'none',
-  lineHeight: 1.5,
-  minHeight: 40,
-  overflow: 'hidden',
 };
